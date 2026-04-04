@@ -1,0 +1,29 @@
+[Bb]in/
+[Oo]bj/
+.vs/
+.vscode/
+*.pdf
+*.docx
+*.txt
+## Visual Studio settings and cache
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+## NuGet packages
+packages/
+*.nuget.props
+*.nuget.targets
+
+## Publish folders
+[Pp]ublish/
+
+## OS generated files
+.DS_Store
+Thumbs.db
+
+## Backup and temporary files
+*.bak
+*.tmp
+*.log
