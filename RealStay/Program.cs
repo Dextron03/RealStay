@@ -1,3 +1,6 @@
+using Infrastructure.Persistence;
+using Infrastructure.Identity;
+
 namespace RealStay
 {
     public class Program
@@ -8,6 +11,11 @@ namespace RealStay
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // 2) Infraestructura (Identity + EF, etc.)
+            builder.Services.AddPersistenceLayer(builder.Configuration);
+            builder.Services.AddIdentityInfrastructure(builder.Configuration);
+
 
             var app = builder.Build();
 
@@ -27,7 +35,7 @@ namespace RealStay
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Account}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

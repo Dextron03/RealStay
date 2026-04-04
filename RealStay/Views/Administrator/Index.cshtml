@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Administrator Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to Administrator Page</h1>
+
+    <form asp-controller="Account" asp-action="Logout" method="post" class="mt-4">
+        <button type="submit" class="btn btn-logout">
+            Cerrar Sesión
+        </button>
+    </form>
+</div>
