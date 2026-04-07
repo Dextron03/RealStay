@@ -1,11 +1,12 @@
 using Infrastructure.Persistence;
 using Infrastructure.Identity;
+using Infrastructure.Identity.Seeds;
 
 namespace RealStay
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,8 @@ namespace RealStay
                 name: "default",
                 pattern: "{controller=Account}/{action=Index}/{id?}")
                 .WithStaticAssets();
+
+            await app.RunIdentitySeedsAsync();
 
             app.Run();
         }

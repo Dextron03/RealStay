@@ -22,31 +22,44 @@ namespace Infrastructure.Persistence.Repositories
         }
 
         public async Task<List<T>> GetAllAsync() =>
-            await _dbSet.ToListAsync();
-        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate) => await _dbSet.Where(predicate).ToListAsync();
-        
-        public async Task<T>  AddAsync(T entity){
+        await _dbSet.ToListAsync();
+
+        public async Task<List<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+            foreach (var include in includes)
+                query = query.Include(include);
+            return await query.ToListAsync();
+        }
+
+        public async Task<T> GetByIdAsync(string id) =>
+            await _dbSet.FindAsync(id);
+
+        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate) =>
+            await _dbSet.Where(predicate).ToListAsync();
+
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet.Where(predicate);
+            foreach (var include in includes)
+                query = query.Include(include);
+            return await query.ToListAsync();
+        }
+
+        public async Task<T> AddAsync(T entity)
+        {
             await _dbSet.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
-
             return entity;
         }
-        
-        public async Task UpdateAsync(T entity)
-        {
-            if(entity == null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
 
+        public void Update(T entity) =>
             _dbSet.Update(entity);
-            await _dbContext.SaveChangesAsync();
-        }
 
-        public async Task DeleteAsyc(T entity)
-        {
+        public void Remove(T entity) =>
             _dbSet.Remove(entity);
+
+        public async Task SaveChangesAsync() =>
             await _dbContext.SaveChangesAsync();
-        }
     }
 }
