@@ -7,6 +7,8 @@ namespace Application.ViewModels.Properties
 {
     public class PropertyFilterViewModel
     {
-        
+        public string? TypeSaleName { get; set; }
+        public int? Rooms {get; set;}
+        public int? Bathrooms {get; set;}
     }
 }
