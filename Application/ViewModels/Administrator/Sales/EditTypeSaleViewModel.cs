@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.Administrator.Sales
 {
-    public class EditTipeSaleViewModel
+    public class EditTypeSaleViewModel
     {
         public required string TypeName { get; set; }
         public required string Description { get; set; }
