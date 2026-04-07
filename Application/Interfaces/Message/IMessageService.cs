@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces
+namespace Application.Interfaces.Message
 {
-    public class IPropertyService
+    public interface IMessageService
     {
         
     }

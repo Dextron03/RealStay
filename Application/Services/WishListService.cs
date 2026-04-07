@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces
+namespace Application.Services
 {
-    public interface IWishListService
+    public class WishListService
     {
         
     }
