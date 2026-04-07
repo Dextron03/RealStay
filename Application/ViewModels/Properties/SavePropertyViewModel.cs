@@ -19,6 +19,19 @@ namespace Application.ViewModels.Properties
         public decimal Price { get; set; }
 
         [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Location { get; set; }
+
+        [Required]
+        public string TypeSaleId { get; set; }
+
+        [Required]
+        public string AgentId { get; set; }
+
+
+        [Required]
         public int Rooms { get; set; }
 
         [Required]
