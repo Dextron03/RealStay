@@ -8,7 +8,7 @@ namespace Application.ViewModels.Administrator.Improvements
 {
     public class ImprovementViewModels
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string ImprovementName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
     }

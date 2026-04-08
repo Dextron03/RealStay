@@ -22,7 +22,7 @@ packages/
 ## OS generated files
 .DS_Store
 Thumbs.db
-
+.claude
 ## Backup and temporary files
 *.bak
 *.tmp

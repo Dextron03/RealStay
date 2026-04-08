@@ -43,7 +43,7 @@ namespace Application.ViewModels.Properties
         [Required, StringLength(250)]
         public string Description { get; set; }
 
-        public List<int> ImprovementIds { get; set; } = new();
+        public List<string> ImprovementIds { get; set; } = new();
         public List<IFormFile> Images { get; set; } = new();
 
     }

@@ -8,7 +8,7 @@ namespace Application.ViewModels.Administrator.Sales
 {
     public class TypeSaleViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string TypeName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int PropertyCount { get; set; }
