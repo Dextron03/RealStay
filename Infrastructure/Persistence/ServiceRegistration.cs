@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Interfaces;
 using Infrastructure.Identity.Contexts;
+using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,8 +24,12 @@ namespace Infrastructure.Persistence
             });
 
             #region  Repositories
-                
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IPropertyRepository, PropertyRepository>();
+            services.AddTransient<IMessageRepository, MessageRepository>();
             #endregion
+            // Por qué AddTransient: estos servicios no guardan estado entre requests, así que Transient es lo más seguro. Si usaras AddScoped también funcionaría (mismo ciclo de vida
+            // que el DbContext), pero Transient es suficiente aquí.
         }
     }
 }
