@@ -1,0 +1,33 @@
+﻿@model List<Application.DTOs.Administrator.Improvements.ImprovementsDto>
+@{
+    ViewData["Title"] = "Mejoras";
+}
+
+<h2 class="mb-4">Mantenimiento de Mejoras</h2>
+
+<a asp-action="CreateImprovement" class="btn btn-primary mb-3">Crear Mejora</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var improvement in Model)
+        {
+            <tr>
+                <td>@improvement.ImprovementName</td>
+                <td>@improvement.Description</td>
+                <td>
+                    <a asp-action="EditImprovement" asp-route-id="@improvement.Id"
+                       class="btn btn-sm btn-primary">Editar</a>
+                    <a asp-action="DeleteImprovement" asp-route-id="@improvement.Id"
+                       class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

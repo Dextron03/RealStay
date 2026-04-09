@@ -25,7 +25,25 @@
                             @if (User.IsInRole("Administrator"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Administrator" asp-action="Index">Home Admin</a>
+                                    <a class="nav-link" asp-controller="Administrator" asp-action="Index">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Administrator" asp-action="Agents">Listado de Agentes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Administrator" asp-action="Admins">Mantenimiento Administradores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Administrator" asp-action="Developers">Mantenimiento Desarrolladores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Administrator" asp-action="PropertyTypes">Mantenimiento Tipo de Propiedades</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Administrator" asp-action="SaleTypes">Mantenimiento Tipo de Ventas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Administrator" asp-action="Improvements">Mantenimiento de Mejoras</a>
                                 </li>
                             }
                             @if (User.IsInRole("Client"))

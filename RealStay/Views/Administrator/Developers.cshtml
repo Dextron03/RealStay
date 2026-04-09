@@ -1,0 +1,41 @@
+﻿@model List<Application.ViewModels.Administrator.User.UserListViewModel>
+@{
+    ViewData["Title"] = "Desarrolladores";
+}
+
+<h2 class="mb-4">Mantenimiento de Desarrolladores</h2>
+
+<a asp-action="CreateDeveloper" class="btn btn-primary mb-3">Crear Desarrollador</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Usuario</th>
+            <th>Cédula</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dev in Model)
+        {
+            <tr>
+                <td>@dev.FirstName</td>
+                <td>@dev.LastName</td>
+                <td>@dev.UserName</td>
+                <td>@dev.Cedula</td>
+                <td>@dev.Email</td>
+                <td>
+                    <a asp-action="EditDeveloper" asp-route-id="@dev.Id"
+                       class="btn btn-sm btn-primary">Editar</a>
+                    <a asp-action="ToggleDeveloperActive" asp-route-id="@dev.Id"
+                       class="btn btn-sm @(dev.IsActive ? "btn-warning" : "btn-success")">
+                        @(dev.IsActive ? "Inactivar" : "Activar")
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

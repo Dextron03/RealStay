@@ -1,0 +1,31 @@
+﻿@model Application.ViewModels.Administrator.Improvements.EditImprovementsViewModel
+@{
+    ViewData["Title"] = "Editar Mejora";
+}
+
+<h2 class="mb-4">Editar Mejora</h2>
+
+<form asp-action="EditImprovement" asp-route-id="@ViewBag.ImprovementId" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="ImprovementName" class="form-label">Nombre de la Mejora</label>
+        <input asp-for="ImprovementName" class="form-control" />
+        <span asp-validation-for="ImprovementName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Descripción</label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <a asp-action="Improvements" class="btn btn-secondary">Volver</a>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

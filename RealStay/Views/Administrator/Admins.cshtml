@@ -1,0 +1,41 @@
+﻿@model List<Application.ViewModels.Administrator.User.UserListViewModel>
+@{
+    ViewData["Title"] = "Administradores";
+}
+
+<h2 class="mb-4">Mantenimiento de Administradores</h2>
+
+<a asp-action="CreateAdmin" class="btn btn-primary mb-3">Crear Administrador</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Usuario</th>
+            <th>Cédula</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var admin in Model)
+        {
+            <tr>
+                <td>@admin.FirstName</td>
+                <td>@admin.LastName</td>
+                <td>@admin.UserName</td>
+                <td>@admin.Cedula</td>
+                <td>@admin.Email</td>
+                <td>
+                    <a asp-action="EditAdmin" asp-route-id="@admin.Id"
+                       class="btn btn-sm btn-primary">Editar</a>
+                    <a asp-action="ToggleAdminActive" asp-route-id="@admin.Id"
+                       class="btn btn-sm @(admin.IsActive ? "btn-warning" : "btn-success")">
+                        @(admin.IsActive ? "Inactivar" : "Activar")
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

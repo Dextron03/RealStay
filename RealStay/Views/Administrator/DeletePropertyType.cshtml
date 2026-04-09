@@ -1,0 +1,18 @@
+﻿@model Application.DTOs.Administrator.Properties.PropertiesDto
+@{
+    ViewData["Title"] = "Eliminar Tipo de Propiedad";
+}
+
+<h2 class="mb-4">Eliminar Tipo de Propiedad</h2>
+
+<div class="alert alert-warning">
+    <p>¿Está seguro que desea eliminar este tipo de propiedad y todas las propiedades con este tipo?</p>
+    <strong>@Model.TypeName</strong>
+</div>
+
+<form asp-action="DeletePropertyTypeConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    @Html.AntiForgeryToken()
+    <a asp-action="PropertyTypes" class="btn btn-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-danger">Aceptar</button>
+</form>

@@ -74,8 +74,6 @@ namespace RealStay.Controllers
                 return RedirectToAction("Index", "Agent");
             if (roles.Contains("Administrator"))
                 return RedirectToAction("Index", "Administrator");
-            if (roles.Contains("Developer"))
-                return RedirectToAction("Index", "Developer");
 
             await _signInManager.SignOutAsync();
             ModelState.AddModelError(string.Empty, "Tu usuario no tiene un rol asignado. Contacta al administrador.");
@@ -105,8 +103,6 @@ namespace RealStay.Controllers
                 return RedirectToAction("Index", "Agent");
             if (User.IsInRole("Administrator"))
                 return RedirectToAction("Index", "Administrator");
-            if (User.IsInRole("Developer"))
-                return RedirectToAction("Index", "Developer");
 
             return RedirectToAction("Index");
         }

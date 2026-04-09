@@ -1,0 +1,18 @@
+﻿@model Application.DTOs.Administrator.Sales.SalesTypeDto
+@{
+    ViewData["Title"] = "Eliminar Tipo de Venta";
+}
+
+<h2 class="mb-4">Eliminar Tipo de Venta</h2>
+
+<div class="alert alert-warning">
+    <p>¿Está seguro que desea eliminar este tipo de venta y las propiedades asociadas?</p>
+    <strong>@Model.TypeName</strong>
+</div>
+
+<form asp-action="DeleteSaleTypeConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    @Html.AntiForgeryToken()
+    <a asp-action="SaleTypes" class="btn btn-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-danger">Aceptar</button>
+</form>

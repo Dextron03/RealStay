@@ -1,0 +1,37 @@
+﻿@model List<Application.ViewModels.Administrator.Agent.AgentsListViewModel>
+@{
+    ViewData["Title"] = "Listado de Agentes";
+}
+
+<h2 class="mb-4">Listado de Agentes</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Correo</th>
+            <th>Propiedades</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var agent in Model)
+        {
+            <tr>
+                <td>@agent.FirstName</td>
+                <td>@agent.LastName</td>
+                <td>@agent.Email</td>
+                <td>@agent.QuantityProperties</td>
+                <td>
+                    <a asp-action="ToggleAgentActive" asp-route-id="@agent.Id"
+                       class="btn btn-sm @(agent.IsActive ? "btn-warning" : "btn-success")">
+                        @(agent.IsActive ? "Inactivar" : "Activar")
+                    </a>
+                    <a asp-action="DeleteAgent" asp-route-id="@agent.Id"
+                       class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

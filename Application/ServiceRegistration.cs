@@ -13,6 +13,7 @@ namespace Application
             services.AddAutoMapper(typeof(ServiceRegistration));
 
             #region Services
+            services.AddScoped<IAdminDashboardService, AdminDashboardService>();
             services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IAgentService, AgentService>();
             services.AddScoped<IImprovementService, ImprovementService>();
