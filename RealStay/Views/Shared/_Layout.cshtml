@@ -19,21 +19,62 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        @if (User.IsInRole("Administrador"))
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (User.Identity.IsAuthenticated)
                         {
-                            <a class="list-group-item" asp-controller="Administrator" asp-action="Index">Dashboard</a>
+                            @if (User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Administrator" asp-action="Index">Home Admin</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Client"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Client" asp-action="Index">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Client" asp-action="MyProperties">Mis Favoritos</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Agent"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Agent" asp-action="Index">Home del Agente</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Agent" asp-action="Properties">Mantenimiento de Propiedades</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Agent" asp-action="Profile">Mi Perfil</a>
+                                </li>
+                            }
                         }
-                        @if (User.IsInRole("Client"))
+                        else
                         {
-                            <a class="list-group-item" asp-controller="Client" asp-action="Index">Dashboard</a>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Agents">Agentes</a>
+                            </li>
                         }
-                        @if (User.IsInRole("Agent"))
+                    </ul>
+                    <div class="d-flex align-items-center">
+                        @if (User.Identity.IsAuthenticated)
                         {
-                            <a class="list-group-item" asp-controller="Agent" asp-action="Index">Dashboard</a>
+                            <span class="me-3">Hola, @User.Identity.Name</span>
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar Sesión</button>
+                            </form>
                         }
-                    }
+                        else
+                        {
+                            <a class="btn btn-primary btn-sm me-2" asp-controller="Account" asp-action="Index">Iniciar Sesión</a>
+                            <a class="btn btn-outline-primary btn-sm" asp-controller="Account" asp-action="Index">Únete a la app</a>
+                        }
+                    </div>
+                </div>
             </div>
         </nav>
     </header>

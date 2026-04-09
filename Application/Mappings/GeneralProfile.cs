@@ -3,11 +3,14 @@ using Application.DTOs.Administrator.Improvements;
 using Application.DTOs.Administrator.Properties;
 using Application.DTOs.Administrator.Sales;
 using Application.DTOs.Administrator.User;
+using Application.DTOs.Agent;
 using Application.ViewModels.Administrator.Agent;
 using Application.ViewModels.Administrator.Improvements;
 using Application.ViewModels.Administrator.Properties;
 using Application.ViewModels.Administrator.Sales;
 using Application.ViewModels.Administrator.User;
+using Application.ViewModels.Agent.Profile;
+using Application.ViewModels.Agent.Properties;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Identity.Entities;
@@ -66,6 +69,17 @@ namespace Application.Mappings
             // AppUser = UserListViewModel (admins y developers)
             CreateMap<AppUser, UserListViewModel>()
                 .ForMember(dest => dest.Cedula, opt => opt.MapFrom(src => src.IdentityNumber));
+
+            // Agent Profile
+            CreateMap<AppUser, AgentProfileViewModel>()
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.CurrentImage, opt => opt.MapFrom(src => src.PathImg));
+
+            // Agent Property
+            CreateMap<Property, AgentPropertyDto>()
+                .ForMember(dest => dest.PropertyTypeName, opt => opt.MapFrom(src => src.PropertyType != null ? src.PropertyType.Name : string.Empty))
+                .ForMember(dest => dest.TypeSaleName, opt => opt.MapFrom(src => src.TypeSale != null ? src.TypeSale.Name : string.Empty))
+                .ForMember(dest => dest.FirstImage, opt => opt.MapFrom(src => src.Images.FirstOrDefault() != null ? src.Images.FirstOrDefault().Path : string.Empty));
 
             // CreateUserDto = AppUser
             CreateMap<CreateUserDto, AppUser>()

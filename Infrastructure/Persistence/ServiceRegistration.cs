@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Interfaces;
 using Infrastructure.Identity.Contexts;
+using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +24,7 @@ namespace Infrastructure.Persistence
             });
 
             #region  Repositories
-                
+                services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             #endregion
         }
     }
