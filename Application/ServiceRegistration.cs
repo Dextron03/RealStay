@@ -13,12 +13,12 @@ namespace Application
             services.AddAutoMapper(typeof(ServiceRegistration));
 
             #region Services
-            services.AddScoped<IAdminDashboardService, AdminDashboardService>();
-            services.AddScoped<IAdminUserService, AdminUserService>();
-            services.AddScoped<IAgentService, AgentService>();
-            services.AddScoped<IImprovementService, ImprovementService>();
-            services.AddScoped<IPropertyTypeService, PropertyTypeService>();
-            services.AddScoped<ISaleTypeService, SaleTypeService>();
+            services.AddTransient<IAdminDashboardService, AdminDashboardService>();
+            services.AddTransient<IAdminUserService, AdminUserService>();
+            services.AddTransient<IAgentService, AgentService>();
+            services.AddTransient<IImprovementService, ImprovementService>();
+            services.AddTransient<IPropertyTypeService, PropertyTypeService>();
+            services.AddTransient<ISaleTypeService, SaleTypeService>();
             #endregion
         }
     }
