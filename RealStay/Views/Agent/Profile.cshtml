@@ -1,0 +1,77 @@
+@model Application.ViewModels.Agent.Profile.AgentProfileViewModel
+@{
+    ViewData["Title"] = "Mi Perfil";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2>Mi Perfil</h2>
+    <hr />
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <form asp-action="Profile" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="mb-3">
+                    @if (!string.IsNullOrEmpty(Model.CurrentImage))
+                    {
+                        <img src="@Model.CurrentImage" alt="Foto de perfil" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; margin: 0 auto;">
+                            <span class="text-white">Sin foto</span>
+                        </div>
+                    }
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Image" class="form-label">Cambiar foto</label>
+                    <input asp-for="Image" class="form-control" type="file" accept="image/*" />
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label asp-for="FirstName" class="form-label">Nombre *</label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label">Apellido *</label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="form-label">Teléfono *</label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

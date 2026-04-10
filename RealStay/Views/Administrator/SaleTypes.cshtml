@@ -1,0 +1,35 @@
+﻿@model List<Application.DTOs.Administrator.Sales.SalesTypeDto>
+@{
+    ViewData["Title"] = "Tipo de Ventas";
+}
+
+<h2 class="mb-4">Mantenimiento de Tipo de Ventas</h2>
+
+<a asp-action="CreateSaleType" class="btn btn-primary mb-3">Crear Tipo de Venta</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Propiedades</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var type in Model)
+        {
+            <tr>
+                <td>@type.TypeName</td>
+                <td>@type.Description</td>
+                <td>@type.PropertyCount</td>
+                <td>
+                    <a asp-action="EditSaleType" asp-route-id="@type.Id"
+                       class="btn btn-sm btn-primary">Editar</a>
+                    <a asp-action="DeleteSaleType" asp-route-id="@type.Id"
+                       class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

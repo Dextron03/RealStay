@@ -1,0 +1,31 @@
+﻿@model Application.ViewModels.Administrator.Properties.CreatePropertyViewModel
+@{
+    ViewData["Title"] = "Crear Tipo de Propiedad";
+}
+
+<h2 class="mb-4">Crear Tipo de Propiedad</h2>
+
+<form asp-action="CreatePropertyType" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="ImprovementName" class="form-label">Nombre del Tipo</label>
+        <input asp-for="ImprovementName" class="form-control" />
+        <span asp-validation-for="ImprovementName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Descripción</label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <a asp-action="PropertyTypes" class="btn btn-secondary">Volver</a>
+    <button type="submit" class="btn btn-primary">Crear</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

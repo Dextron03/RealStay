@@ -2,6 +2,7 @@ using Application;
 using Infrastructure.Persistence;
 using Infrastructure.Identity;
 using Infrastructure.Identity.Seeds;
+using Application;
 
 namespace RealStay
 {
@@ -14,7 +15,6 @@ namespace RealStay
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            // 1) Application Layer (AutoMapper, Services)
             builder.Services.AddApplicationLayer();
 
             // 2) Infraestructura (Identity + EF, etc.)

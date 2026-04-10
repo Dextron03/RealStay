@@ -1,0 +1,123 @@
+@model Application.ViewModels.Agent.Properties.EditAgentPropertyViewModel
+@{
+    ViewData["Title"] = "Editar Propiedad";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2>Editar Propiedad</h2>
+    <hr />
+
+    <form asp-action="EditProperty" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="PropertyTypeId" />
+        <input type="hidden" asp-for="TypeSaleId" />
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Tipo de Propiedad</label>
+                    <select class="form-select" id="PropertyTypeId" name="PropertyTypeId" asp-items='new SelectList(ViewData["PropertyTypes"] as List<Application.DTOs.Administrator.Properties.PropertiesDto>, "Id", "TypeName", Model.PropertyTypeId)'>
+                        <option value="">Seleccione un tipo</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Tipo de Venta</label>
+                    <select class="form-select" id="TypeSaleId" name="TypeSaleId" asp-items='new SelectList(ViewData["TypeSales"] as List<Application.DTOs.Administrator.Sales.SalesTypeDto>, "Id", "TypeName", Model.TypeSaleId)'>
+                        <option value="">Seleccione un tipo de venta</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label">Precio (RD$) *</label>
+                    <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label asp-for="Location" class="form-label">Ubicación *</label>
+                    <input asp-for="Location" class="form-control" />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label asp-for="NumberRooms" class="form-label">Habitaciones *</label>
+                    <input asp-for="NumberRooms" class="form-control" type="number" />
+                    <span asp-validation-for="NumberRooms" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label asp-for="NumberBaths" class="form-label">Baños *</label>
+                    <input asp-for="NumberBaths" class="form-control" type="number" />
+                    <span asp-validation-for="NumberBaths" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label asp-for="Meters" class="form-label">Tamaño (m²) *</label>
+                    <input asp-for="Meters" class="form-control" type="number" />
+                    <span asp-validation-for="Meters" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label asp-for="ImprovementIds" class="form-label">Mejoras</label>
+                    <select asp-for="ImprovementIds" class="form-select" multiple size="3">
+                        @foreach (var improvement in ViewData["Improvements"] as List<Application.DTOs.Administrator.Improvements.ImprovementsDto>)
+                        {
+                            <option value="@improvement.Id">@improvement.ImprovementName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Descripción *</label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        @if (Model.ExistingImages != null && Model.ExistingImages.Any())
+        {
+            <div class="mb-3">
+                <label class="form-label">Imágenes Actuales</label>
+                <div class="d-flex gap-2 flex-wrap">
+                    @foreach (var image in Model.ExistingImages)
+                    {
+                        @if (!string.IsNullOrEmpty(image))
+                        {
+                            <img src="@image" alt="Imagen propiedad" style="width: 100px; height: 100px; object-fit: cover;" class="rounded">
+                        }
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="mb-3">
+            <label asp-for="Images" class="form-label">Nuevas Imágenes (opcional)</label>
+            <input asp-for="Images" class="form-control" type="file" multiple accept="image/*" />
+            <small class="text-muted">Deje vacío para mantener las imágenes actuales</small>
+        </div>
+
+        <div class="mt-4">
+            <a asp-action="Properties" class="btn btn-secondary">Volver</a>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

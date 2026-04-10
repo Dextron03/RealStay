@@ -10,6 +10,6 @@ namespace Application.Interfaces.Properties
     {
         Task AddToWishListAsync(string clientId, string propertyId);
         Task RemoveFromWishListAsync(string clientId, string propertyId);
-        Task<List<PropertyViewModel>> GetWishListAsync(string clientId);
-    }
+/*         Task<List<PropertyViewModel>> GetWishListAsync(string clientId);
+ */    }
 }

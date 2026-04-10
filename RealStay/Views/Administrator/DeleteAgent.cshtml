@@ -1,0 +1,18 @@
+﻿@model Application.ViewModels.Administrator.Agent.AgentsListViewModel
+@{
+    ViewData["Title"] = "Eliminar Agente";
+}
+
+<h2 class="mb-4">Eliminar Agente</h2>
+
+<div class="alert alert-warning">
+    <p>¿Está seguro que desea eliminar este agente y todas sus propiedades?</p>
+    <strong>@Model.FirstName @Model.LastName</strong>
+</div>
+
+<form asp-action="DeleteAgentConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    @Html.AntiForgeryToken()
+    <a asp-action="Agents" class="btn btn-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-danger">Aceptar</button>
+</form>

@@ -1,0 +1,18 @@
+﻿@model Application.DTOs.Administrator.Improvements.ImprovementsDto
+@{
+    ViewData["Title"] = "Eliminar Mejora";
+}
+
+<h2 class="mb-4">Eliminar Mejora</h2>
+
+<div class="alert alert-warning">
+    <p>¿Está seguro que desea eliminar esta mejora?</p>
+    <strong>@Model.ImprovementName</strong>
+</div>
+
+<form asp-action="DeleteImprovementConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    @Html.AntiForgeryToken()
+    <a asp-action="Improvements" class="btn btn-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-danger">Aceptar</button>
+</form>

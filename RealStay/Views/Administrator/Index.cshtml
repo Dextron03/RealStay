@@ -1,13 +1,73 @@
-﻿@{
-    ViewData["Title"] = "Administrator Page";
+﻿@model Application.DTOs.Administrator.Dashboards.AdminDashboarDto
+@{
+    ViewData["Title"] = "Dashboard Administrador";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Administrator Page</h1>
+<h2 class="mb-4">Dashboard del Administrador</h2>
 
-    <form asp-controller="Account" asp-action="Logout" method="post" class="mt-4">
-        <button type="submit" class="btn btn-logout">
-            Cerrar Sesión
-        </button>
-    </form>
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Propiedades Disponibles</h5>
+                <p class="card-text display-6">@Model.AvailableProperties</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Propiedades Vendidas</h5>
+                <p class="card-text display-6">@Model.SoldProperties</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Agentes Activos</h5>
+                <p class="card-text display-6">@Model.ActiveAgents</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Agentes Inactivos</h5>
+                <p class="card-text display-6">@Model.InactiveAgents</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Clientes Activos</h5>
+                <p class="card-text display-6">@Model.ActiveClients</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Clientes Inactivos</h5>
+                <p class="card-text display-6">@Model.InactiveClients</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Desarrolladores Activos</h5>
+                <p class="card-text display-6">@Model.ActiveDevelopers</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Desarrolladores Inactivos</h5>
+                <p class="card-text display-6">@Model.InactiveDevelopers</p>
+            </div>
+        </div>
+    </div>
 </div>
