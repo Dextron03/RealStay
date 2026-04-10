@@ -10,7 +10,9 @@ using Application.ViewModels.Administrator.Properties;
 using Application.ViewModels.Administrator.Sales;
 using Application.ViewModels.Administrator.User;
 using Application.ViewModels.Agent.Profile;
-using Application.ViewModels.Agent.Properties;
+using Application.ViewModels.Messages;
+using Application.ViewModels.Offers;
+using Application.ViewModels.Properties;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Identity.Entities;
@@ -91,6 +93,47 @@ namespace Application.Mappings
             // EditUserDto = AppUser
             CreateMap<EditUserDto, AppUser>()
                 .ForMember(dest => dest.IdentityNumber, opt => opt.MapFrom(src => src.Cedula));
+
+            // Property -> PropertyViewModel
+            CreateMap<Property, PropertyViewModel>()
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.PropertyCode))
+                .ForMember(dest => dest.Rooms, opt => opt.MapFrom(src => src.NumberRooms))
+                .ForMember(dest => dest.Bathrooms, opt => opt.MapFrom(src => src.NumberBaths))
+                .ForMember(dest => dest.Meters, opt => opt.MapFrom(src => (double)src.Meters))
+                .ForMember(dest => dest.PropertyTypeName, opt => opt.MapFrom(src => src.PropertyType != null ? src.PropertyType.Name : string.Empty))
+                .ForMember(dest => dest.TypeSaleName, opt => opt.MapFrom(src => src.TypeSale != null ? src.TypeSale.Name : string.Empty))
+                .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.Images.Select(i => i.Path).ToList()))
+                .ForMember(dest => dest.ImprovementNames, opt => opt.MapFrom(src => src.Improvements.Where(i => i.Improvement != null).Select(i => i.Improvement!.Name).ToList()))
+                .ForMember(dest => dest.AgentName, opt => opt.Ignore())
+                .ForMember(dest => dest.AgentPhone, opt => opt.Ignore());
+
+            // SavePropertyViewModel -> Property
+            CreateMap<SavePropertyViewModel, Property>()
+                .ForMember(dest => dest.NumberRooms, opt => opt.MapFrom(src => src.Rooms))
+                .ForMember(dest => dest.NumberBaths, opt => opt.MapFrom(src => src.Bathrooms))
+                .ForMember(dest => dest.Meters, opt => opt.MapFrom(src => (int)src.Meters))
+                .ForMember(dest => dest.PropertyCode, opt => opt.Ignore())
+                .ForMember(dest => dest.Status, opt => opt.Ignore())
+                .ForMember(dest => dest.Images, opt => opt.Ignore())
+                .ForMember(dest => dest.Improvements, opt => opt.Ignore())
+                .ForMember(dest => dest.Offers, opt => opt.Ignore())
+                .ForMember(dest => dest.Messages, opt => opt.Ignore())
+                .ForMember(dest => dest.RegistrationDate, opt => opt.Ignore());
+
+            // Offer -> OFferViewModel
+            CreateMap<Offer, OfferViewModel>();
+
+            //  SaveOfferViewModel → Offer
+            CreateMap<SaveOfferViewModel, Offer>()
+                .ForMember(dest => dest.OfferAmount, opt => opt.MapFrom(src => src.OfferAmount))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.PropertyId, opt => opt.MapFrom(src => src.PropertyId));
+
+            //  Message → MessageViewModel 
+            CreateMap<Message, MessageViewModel>();
+
+            // SaveMessageViewModel → Message
+            CreateMap<SaveMessageViewModel, Message>();
         }
     }
 }
