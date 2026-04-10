@@ -2,7 +2,6 @@ using Application;
 using Infrastructure.Persistence;
 using Infrastructure.Identity;
 using Infrastructure.Identity.Seeds;
-using Application;
 
 namespace RealStay
 {
