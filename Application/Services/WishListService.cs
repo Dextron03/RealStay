@@ -10,7 +10,7 @@ using Domain.Interfaces;
 
 namespace Application.Services
 {
-    public class WishListService : IWishListService
+    public class WishListService 
     {
         private readonly IGenericRepository<WishList> _genericRepository;
         private readonly IMapper _mapper;
@@ -21,15 +21,19 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task AddToWishListAsync(string clientId, string propertyId){
+        public async Task AddToWishListAsync(string clientId, string propertyId)
+        {
+            /* _genericRepository.AddAsync(); */
+        }
+
+        public async Task RemoveFromWishListAsync(string clientId, string propertyId)
+        {
+
+        }
+
+/*         public async Task<List<PropertyViewModel>> GetWishListAsync(string clientId)
+        {
             
-        }
-
-        public async Task RemoveFromWishListAsync(string clientId, string propertyId){
-
-        }
-
-/*         public async Task<List<PropertyViewModel>> GetWishListAsync(string clientId){
         } */
     }
 }
