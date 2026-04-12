@@ -49,10 +49,16 @@
                             @if (User.IsInRole("Client"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Client" asp-action="Index">Home</a>
+                                    <a class="nav-link" asp-controller="Client" asp-action="Index">Propiedades</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Client" asp-action="MyProperties">Mis Favoritos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Client" asp-action="MyOffers">Mis Ofertas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Client" asp-action="Chats">Mensajes</a>
                                 </li>
                             }
                             @if (User.IsInRole("Agent"))

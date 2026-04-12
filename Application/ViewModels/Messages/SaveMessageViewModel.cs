@@ -8,16 +8,13 @@ namespace Application.ViewModels.Messages
 {
     public class SaveMessageViewModel
     {
-        public string Id { get; set; }
-        [Required]
-        public string SenderId { get; set; }
-        [Required]
-        public string ReceiverId { get; set; }
-        
+        public string? Id { get; set; }
+        public string? SenderId { get; set; }
+        public string? ReceiverId { get; set; }
+
         [Required, MinLength(1)]
         public string Content { get; set; } = string.Empty;
-        [Required]
-        public string PropertyId { get; set; }
+        public string? PropertyId { get; set; }
 
     }
 }

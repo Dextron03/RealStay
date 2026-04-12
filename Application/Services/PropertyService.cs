@@ -55,6 +55,7 @@ namespace Application.Services
 
             if(agent != null)
             {
+                vm.AgentId = agent.Id;
                 vm.AgentName = $"{agent.FirstName} {agent.LastName}";
                 vm.AgentPhone = agent.PhoneNumber!;
             }
