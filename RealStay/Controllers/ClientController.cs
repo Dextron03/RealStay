@@ -16,17 +16,38 @@ namespace RealStay.Controllers
         private readonly IWishListService _wishListService;
         private readonly IOfferService _offerService;
         private readonly IMessageService _messageService;
+        private readonly Application.Interfaces.Agent.IAgentService _agentService;
 
         public ClientController(
             IPropertyService propertyService,
             IWishListService wishListService,
             IOfferService offerService,
-            IMessageService messageService)
+            IMessageService messageService,
+            Application.Interfaces.Agent.IAgentService agentService)
         {
             _propertyService = propertyService;
             _wishListService = wishListService;
             _offerService = offerService;
             _messageService = messageService;
+            _agentService = agentService;
+        }
+
+        // ── Agentes ──────────────────────────────────────────────────────────
+        [HttpGet]
+        public async Task<IActionResult> Agents(string name)
+        {
+            var agents = await _agentService.SearchAgentsByNameAsync(name);
+            ViewData["SearchName"] = name;
+            return View(agents);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AgentProperties(string agentId)
+        {
+            var properties = await _propertyService.GetByAgentAsync(agentId);
+            var agent = await _agentService.GetAgentProfileAsync(agentId);
+            ViewData["AgentName"] = $"{agent.FirstName} {agent.LastName}";
+            return View(properties);
         }
 
         private string GetClientId() =>

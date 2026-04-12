@@ -300,6 +300,33 @@ namespace Application.Services
             await _userManager.UpdateAsync(user);
         }
 
+        public async Task<List<AgentProfileDto>> GetAllAgentsAsync()
+        {
+            var users = await _userManager.GetUsersInRoleAsync("Agent");
+            var agents = users.Where(u => u.IsActive).ToList();
+
+            return agents.Select(u => new AgentProfileDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.Email ?? string.Empty,
+                Phone = u.PhoneNumber ?? string.Empty,
+                PathImg = u.PathImg ?? string.Empty
+            }).ToList();
+        }
+
+        public async Task<List<AgentProfileDto>> SearchAgentsByNameAsync(string name)
+        {
+            var agents = await GetAllAgentsAsync();
+            if (string.IsNullOrEmpty(name)) return agents;
+
+            return agents.Where(a =>
+                a.FirstName.Contains(name, StringComparison.OrdinalIgnoreCase) ||
+                a.LastName.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
         private async Task<string> SaveImageAsync(IFormFile image)
         {
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "properties");

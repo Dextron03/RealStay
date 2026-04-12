@@ -167,6 +167,9 @@ namespace Application.Services
         {
             var properties = await _propertyRepository.FilterAsync(
                 filters.TypeSaleName,
+                filters.PropertyTypeId,
+                filters.MinPrice,
+                filters.MaxPrice,
                 filters.Rooms,
                 filters.Bathrooms
             );

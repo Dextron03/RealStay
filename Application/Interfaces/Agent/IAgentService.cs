@@ -15,5 +15,7 @@ namespace Application.Interfaces.Agent
         Task DeletePropertyAsync(string propertyId, string agentId);
         Task<AgentProfileDto> GetAgentProfileAsync(string agentId);
         Task UpdateAgentProfileAsync(string agentId, UpdateAgentProfileDto model);
+        Task<List<AgentProfileDto>> GetAllAgentsAsync();
+        Task<List<AgentProfileDto>> SearchAgentsByNameAsync(string name);
     }
 }
