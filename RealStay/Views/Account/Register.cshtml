@@ -1,0 +1,93 @@
+@model Application.ViewModels.Login.RegisterViewModel
+@{
+    ViewData["Title"] = "Registro";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0 fw-bold">Únete a RealStay</h3>
+                    <p class="mb-0 small">Crea tu cuenta para empezar a buscar tu próximo hogar</p>
+                </div>
+                <div class="card-body p-5">
+                    <form asp-action="Register" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="FirstName" class="form-label fw-bold">Nombre</label>
+                                <input asp-for="FirstName" class="form-control" placeholder="Ej. Juan" />
+                                <span asp-validation-for="FirstName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="LastName" class="form-label fw-bold">Apellido</label>
+                                <input asp-for="LastName" class="form-control" placeholder="Ej. Pérez" />
+                                <span asp-validation-for="LastName" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="UserName" class="form-label fw-bold">Nombre de Usuario</label>
+                                <input asp-for="UserName" class="form-control" placeholder="JuanPerez22" />
+                                <span asp-validation-for="UserName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-bold">Correo Electrónico</label>
+                                <input asp-for="Email" class="form-control" placeholder="juan@correo.com" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="PhoneNumber" class="form-label fw-bold">Teléfono</label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="809-000-0000" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ProfilePicture" class="form-label fw-bold">Foto de Perfil</label>
+                                <input asp-for="ProfilePicture" type="file" class="form-control" accept="image/*" />
+                                <span asp-validation-for="ProfilePicture" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="Password" class="form-label fw-bold">Contraseña</label>
+                                <input asp-for="Password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ConfirmPassword" class="form-label fw-bold">Confirmar Contraseña</label>
+                                <input asp-for="ConfirmPassword" class="form-control" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Tipo de Cuenta</label>
+                            <select asp-for="Role" class="form-select">
+                                <option value="Client">Cliente (Deseo comprar/alquilar)</option>
+                                <option value="Agent">Agente (Deseo vender/administrar)</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg shadow">Crear Cuenta</button>
+                            <div class="text-center mt-3">
+                                <span class="text-muted">¿Ya tienes cuenta?</span> <a asp-action="Index" class="text-decoration-none fw-bold">Inicia sesión</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

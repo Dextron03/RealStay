@@ -21,7 +21,8 @@ namespace Application.ViewModels.Properties
         public string Description {get; set;}
         public List<string> ImageUrls {get; set;} = new();
         public List<string> ImprovementNames {get; set;} = new();
+        public string AgentId {get; set;}
         public string AgentName {get; set;}
-        public string AgentPhone {get; set;}    
+        public string AgentPhone {get; set;}
     }
 }

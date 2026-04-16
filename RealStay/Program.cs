@@ -2,6 +2,8 @@ using Application;
 using Infrastructure.Persistence;
 using Infrastructure.Identity;
 using Infrastructure.Identity.Seeds;
+using Shared.Services;
+using Shared.Settings;
 
 namespace RealStay
 {
@@ -19,6 +21,10 @@ namespace RealStay
             // 2) Infraestructura (Identity + EF, etc.)
             builder.Services.AddPersistenceLayer(builder.Configuration);
             builder.Services.AddIdentityInfrastructure(builder.Configuration);
+
+            // Email
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+            builder.Services.AddTransient<IEmailService, EmailService>();
 
 
             var app = builder.Build();

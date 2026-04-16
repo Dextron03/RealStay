@@ -133,7 +133,9 @@ namespace Application.Mappings
             CreateMap<Message, MessageViewModel>();
 
             // SaveMessageViewModel → Message
-            CreateMap<SaveMessageViewModel, Message>();
+            CreateMap<SaveMessageViewModel, Message>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.DateSend, opt => opt.Ignore());
         }
     }
 }

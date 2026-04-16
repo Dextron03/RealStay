@@ -1,56 +1,26 @@
 @model List<Application.ViewModels.Properties.PropertyViewModel>
-@using Application.ViewModels.Properties
 @{
-    ViewData["Title"] = "Propiedades Disponibles";
+    ViewData["Title"] = "Mis Favoritos";
     Layout = "_Layout";
-    var filters = ViewData["Filters"] as PropertyFilterViewModel ?? new PropertyFilterViewModel();
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">Propiedades Disponibles</h2>
+    <h2 class="mb-4">Mis Favoritos</h2>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show">
             @TempData["Success"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show">
             @TempData["Error"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-
-    {{-- Filtros --}}
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <form asp-action="Index" method="get" class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label class="form-label">Tipo de Venta</label>
-                    <select name="TypeSaleName" class="form-select">
-                        <option value="">Todos</option>
-                        <option value="Venta" selected="@(filters.TypeSaleName == "Venta")">Venta</option>
-                        <option value="Alquiler" selected="@(filters.TypeSaleName == "Alquiler")">Alquiler</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Habitaciones</label>
-                    <input type="number" name="Rooms" class="form-control" min="1" value="@filters.Rooms" placeholder="Ej: 3" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Baños</label>
-                    <input type="number" name="Bathrooms" class="form-control" min="1" value="@filters.Bathrooms" placeholder="Ej: 2" />
-                </div>
-                <div class="col-md-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
-                    <a asp-action="Index" class="btn btn-outline-secondary w-100">Limpiar</a>
-                </div>
-            </form>
-        </div>
-    </div>
 
     @if (Model.Any())
     {
@@ -80,10 +50,15 @@
                                 <strong>RD$ @p.Price.ToString("N0")</strong><br>
                                 <small>@p.Rooms hab. · @p.Bathrooms baños · @p.Meters m²</small>
                             </p>
-                            <div class="mt-auto">
-                                <a asp-action="PropertyDetails" asp-route-id="@p.Id" class="btn btn-primary btn-sm w-100">
+                            <div class="mt-auto d-flex gap-2">
+                                <a asp-action="PropertyDetails" asp-route-id="@p.Id" class="btn btn-primary btn-sm flex-grow-1">
                                     Ver Detalles
                                 </a>
+                                <form asp-action="RemoveFromWishList" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="propertyId" value="@p.Id" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Quitar de favoritos">♥</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -93,7 +68,10 @@
     }
     else
     {
-        <div class="alert alert-info">No hay propiedades disponibles con los filtros seleccionados.</div>
+        <div class="alert alert-info">
+            No tienes propiedades en favoritos.
+            <a asp-action="Index" class="alert-link">Explorar propiedades</a>
+        </div>
     }
 </div>
 

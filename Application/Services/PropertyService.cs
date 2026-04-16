@@ -55,6 +55,7 @@ namespace Application.Services
 
             if(agent != null)
             {
+                vm.AgentId = agent.Id;
                 vm.AgentName = $"{agent.FirstName} {agent.LastName}";
                 vm.AgentPhone = agent.PhoneNumber!;
             }
@@ -166,6 +167,9 @@ namespace Application.Services
         {
             var properties = await _propertyRepository.FilterAsync(
                 filters.TypeSaleName,
+                filters.PropertyTypeId,
+                filters.MinPrice,
+                filters.MaxPrice,
                 filters.Rooms,
                 filters.Bathrooms
             );

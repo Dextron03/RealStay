@@ -54,24 +54,23 @@ namespace Application.Services
 
         public async Task<List<AgentsListViewModel>> GetAllAgentsAsync()
         {
+            var agentsInRole = await _userManager.GetUsersInRoleAsync(Role.Agent.ToString());
+            var agentIds = agentsInRole.Select(a => a.Id).ToList();
+
             var users = await _userManager.Users
                 .Include(u => u.Properties)
-                .Where(u => u.Properties.Any())
+                .Where(u => agentIds.Contains(u.Id))
                 .ToListAsync();
 
-            var agentsInRole = await _userManager.GetUsersInRoleAsync(Role.Agent.ToString());
-            var agentIds = agentsInRole.Select(a => a.Id).ToHashSet();
-
-            return users.Where(u => agentIds.Contains(u.Id))
-                .Select(u => new AgentsListViewModel
-                {
-                    Id = u.Id,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
-                    QuantityProperties = u.Properties.Count(p => p.Status == PropertyStatus.Available.ToString()),
-                    Email = u.Email ?? string.Empty,
-                    IsActive = u.IsActive
-                }).ToList();
+            return users.Select(u => new AgentsListViewModel
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                QuantityProperties = u.Properties.Count,
+                Email = u.Email ?? string.Empty,
+                IsActive = u.IsActive
+            }).ToList();
         }
 
         public async Task CreateAdminAsync(CreateUserDto dto)
@@ -143,7 +142,7 @@ namespace Application.Services
                 if (!passwordResult.Succeeded)
                 {
                     var errors = string.Join(", ", passwordResult.Errors.Select(e => e.Description));
-                    throw new Exception($"Error al actualizar contraseña: {errors}");
+                    throw new Exception($"Error al actualizar la contraseña {errors}");
                 }
             }
         }
@@ -159,14 +158,20 @@ namespace Application.Services
 
         public async Task DeleteAgentAsync(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.Users
+                .Include(u => u.Properties)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
             if (user == null) throw new Exception("Agente no encontrado");
+
+            user.Properties.Clear();
+            await _userManager.UpdateAsync(user);
 
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                throw new Exception($"Error al eliminar agente: {errors}");
+                throw new Exception($"Error al eliminar al agente {errors}");
             }
         }
     }
