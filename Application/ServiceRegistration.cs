@@ -17,14 +17,6 @@ namespace Application
             services.AddAutoMapper(typeof(GeneralProfile).Assembly);
 
             #region Services
-<<<<<<< HEAD
-            services.AddTransient<IAdminDashboardService, AdminDashboardService>();
-            services.AddTransient<IAdminUserService, AdminUserService>();
-            services.AddTransient<IAgentService, AgentService>();
-            services.AddTransient<IImprovementService, ImprovementService>();
-            services.AddTransient<IPropertyTypeService, PropertyTypeService>();
-            services.AddTransient<ISaleTypeService, SaleTypeService>();
-=======
             services.AddTransient<IPropertyService, PropertyService>();
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IPropertyTypeService, PropertyTypeService>();
@@ -38,7 +30,6 @@ namespace Application
 
             // Por qué AddTransient: estos servicios no guardan estado entre requests, así que Transient es lo más seguro. Si usaras AddScoped también funcionaría (mismo ciclo de vida
             // que el DbContext), pero Transient es suficiente aquí.
->>>>>>> f14335391b18eea4d4ecabb2e473c1f626b8e7b8
             #endregion
 
             return services;
