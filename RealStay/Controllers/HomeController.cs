@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RealStay.Models;
 using Application.Interfaces.Properties;
@@ -7,6 +8,7 @@ using Application.Interfaces;
 
 namespace RealStay.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly IPropertyService _propertyService;
@@ -49,6 +51,7 @@ namespace RealStay.Controllers
             return View(properties);
         }
 
+        [Authorize]
         public async Task<IActionResult> PropertyDetails(string id)
         {
             var property = await _propertyService.GetByIdAsync(id);
