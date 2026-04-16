@@ -1,0 +1,61 @@
+@model List<Application.DTOs.Agent.AgentProfileDto>
+@{
+    ViewData["Title"] = "Agentes Inmobiliarios";
+    var searchName = ViewData["SearchName"] as string;
+}
+
+<div class="container mt-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h2 class="fw-bold"><i class="fas fa-user-tie me-2"></i>Nuestros Agentes</h2>
+            <p class="text-muted">Encuentra al profesional ideal para tu próxima inversión</p>
+        </div>
+        <div class="col-md-6">
+            <form asp-action="Agents" method="get" class="d-flex">
+                <input type="text" name="name" class="form-control me-2 shadow-sm" placeholder="Buscar agente por nombre..." value="@searchName">
+                <button type="submit" class="btn btn-primary shadow-sm px-4">Buscar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        @if (Model.Any())
+        {
+            @foreach (var agent in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 text-center p-3 agent-card">
+                        <div class="mb-3">
+                            <img src="@(string.IsNullOrEmpty(agent.PathImg) ? "/img/default-user.png" : agent.PathImg)" 
+                                 class="rounded-circle shadow-sm" 
+                                 style="width: 120px; height: 120px; object-fit: cover;" 
+                                 alt="@agent.FirstName">
+                        </div>
+                        <div class="card-body p-0">
+                            <h5 class="card-title fw-bold mb-1">@agent.FirstName @agent.LastName</h5>
+                            <p class="text-muted small mb-3"><i class="fas fa-envelope me-1"></i> @agent.Email</p>
+                            <div class="d-grid gap-2">
+                                <a asp-action="AgentProperties" asp-route-agentId="@agent.Id" class="btn btn-outline-primary btn-sm">Ver Propiedades</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                <h3>No se encontraron agentes</h3>
+                <p class="text-muted">Intenta con otro nombre.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .agent-card:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+    }
+</style>

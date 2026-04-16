@@ -1,8 +1,109 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@using Application.ViewModels.Properties
+@model List<PropertyViewModel>
+@{
+    ViewData["Title"] = "Catálogo de Propiedades";
+    var filters = ViewData["Filters"] as PropertyFilterViewModel;
+    var propertyTypes = ViewData["PropertyTypes"] as List<Application.DTOs.Administrator.Properties.PropertiesDto>;
+    var saleTypes = ViewData["SaleTypes"] as List<Application.DTOs.Administrator.Sales.SalesTypeDto>;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar Filtros -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="fas fa-filter me-2"></i>Filtrar Propiedades</h5>
+                    <form asp-action="Index" method="get">
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Propiedad</label>
+                            <select name="PropertyTypeId" class="form-select">
+                                <option value="">Todos</option>
+                                @foreach (var type in propertyTypes!)
+                                {
+                                    <!option value="@type.Id" @(filters?.PropertyTypeId == type.Id ? "selected" : "")>@type.TypeName</!option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Venta</label>
+                            <select name="TypeSaleName" class="form-select">
+                                <option value="">Todos</option>
+                                @foreach (var sale in saleTypes!)
+                                {
+                                    <!option value="@sale.TypeName" @(filters?.TypeSaleName == sale.TypeName ? "selected" : "")>@sale.TypeName</!option>
+                                }
+                            </select>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Precio Mín.</label>
+                                <input type="number" name="MinPrice" class="form-control" value="@filters?.MinPrice" placeholder="0" />
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Precio Máx.</label>
+                                <input type="number" name="MaxPrice" class="form-control" value="@filters?.MaxPrice" placeholder="Máx" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Hab.</label>
+                                <input type="number" name="Rooms" class="form-control" value="@filters?.Rooms" placeholder="0" />
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Baños</label>
+                                <input type="number" name="Bathrooms" class="form-control" value="@filters?.Bathrooms" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid de Propiedades -->
+        <div class="col-md-9">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <div class="col">
+                            <div class="card h-100 shadow-sm border-0 property-card">
+                                <div class="position-relative">
+                                    <img src="@(item.ImageUrls.Any() ? item.ImageUrls.First() : "/img/no-image.jpg")" class="card-img-top" style="height: 200px; object-fit: cover;" alt="@item.Name">
+                                    <span class="badge bg-primary position-absolute top-0 end-0 m-2">@item.TypeSaleName</span>
+                                    <span class="badge bg-dark position-absolute top-0 start-0 m-2">@item.PropertyTypeName</span>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-truncate">@item.Name</h5>
+                                    <p class="card-text text-muted small"><i class="fas fa-map-marker-alt me-1"></i> @item.Location</p>
+                                    <h4 class="text-primary fw-bold">RD$ @item.Price.ToString("N0")</h4>
+                                    <div class="d-flex justify-content-between text-muted border-top pt-2">
+                                        <span><i class="fas fa-bed me-1"></i> @item.Rooms</span>
+                                        <span><i class="fas fa-bath me-1"></i> @item.Bathrooms</span>
+                                        <span><i class="fas fa-ruler-combined me-1"></i> @item.Meters m²</span>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white border-0 pb-3">
+                                    <a asp-action="PropertyDetails" asp-route-id="@item.Id" class="btn btn-outline-primary w-100">Ver Detalles</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h3>No se encontraron propiedades</h3>
+                        <p class="text-muted">Intenta con otros criterios de búsqueda.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>

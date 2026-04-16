@@ -53,7 +53,7 @@ namespace Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async  Task<List<Property>> FilterAsync(string? typeSaleName, int? rooms, int? bathrooms)
+        public async Task<List<Property>> FilterAsync(string? typeSaleName, string? propertyTypeId, decimal? minPrice, decimal? maxPrice, int? rooms, int? bathrooms)
         {
             var query = _dbContext.Properties
                 .Include(p => p.PropertyType)
@@ -64,7 +64,16 @@ namespace Infrastructure.Persistence.Repositories
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(typeSaleName))
-                query = query.Where(p => p.TypeSale.Name == typeSaleName);
+                query = query.Where(p => p.TypeSale!.Name == typeSaleName);
+
+            if (!string.IsNullOrEmpty(propertyTypeId))
+                query = query.Where(p => p.PropertyTypeId == propertyTypeId);
+
+            if (minPrice.HasValue)
+                query = query.Where(p => p.Price >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(p => p.Price <= maxPrice.Value);
 
             if (rooms.HasValue)
                 query = query.Where(p => p.NumberRooms == rooms.Value);

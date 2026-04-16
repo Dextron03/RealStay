@@ -3,6 +3,8 @@ using Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Services;
+using System.IO;
 
 namespace RealStay.Controllers
 {
@@ -11,13 +13,189 @@ namespace RealStay.Controllers
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IEmailService _emailService;
+        private readonly IWebHostEnvironment _env;
 
         public AccountController(
             SignInManager<AppUser> signInManager,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager,
+            IEmailService emailService,
+            IWebHostEnvironment env)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _emailService = emailService;
+            _env = env;
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+                return RedirectToRoleHome();
+
+            return View(new RegisterViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var userExist = await _userManager.FindByNameAsync(vm.UserName);
+            if (userExist != null)
+            {
+                ModelState.AddModelError(string.Empty, "El nombre de usuario ya existe.");
+                return View(vm);
+            }
+
+            var emailExist = await _userManager.FindByEmailAsync(vm.Email);
+            if (emailExist != null)
+            {
+                ModelState.AddModelError(string.Empty, "El correo electrónico ya existe.");
+                return View(vm);
+            }
+
+            var user = new AppUser
+            {
+                FirstName = vm.FirstName,
+                LastName = vm.LastName,
+                UserName = vm.UserName,
+                Email = vm.Email,
+                PhoneNumber = vm.PhoneNumber,
+                IsActive = false // Empieza inactivo hasta que confirme el correo
+            };
+
+            // Guardar foto de perfil
+            if (vm.ProfilePicture != null)
+            {
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(vm.ProfilePicture.FileName)}";
+                var folderPath = Path.Combine(_env.WebRootPath, "uploads", "users");
+                Directory.CreateDirectory(folderPath);
+                var filePath = Path.Combine(folderPath, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await vm.ProfilePicture.CopyToAsync(stream);
+                }
+                user.PathImg = $"/uploads/users/{fileName}";
+            }
+
+            var result = await _userManager.CreateAsync(user, vm.Password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, vm.Role);
+
+                // Enviar correo de confirmación
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+                
+                await _emailService.SendEmailAsync(
+                    user.Email!,
+                    "Confirmación de Cuenta - RealStay",
+                    $"<h1>Bienvenido a RealStay</h1><p>Por favor confirma tu cuenta haciendo clic en el siguiente enlace:</p><a href='{confirmationLink}'>Activar Cuenta</a>"
+                );
+
+                TempData["Success"] = "Usuario registrado exitosamente. Por favor revisa tu correo para activar tu cuenta.";
+                return RedirectToAction("Index");
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
+            return View(vm);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null) return RedirectToAction("Index");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound();
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                user.IsActive = true;
+                await _userManager.UpdateAsync(user);
+                TempData["Success"] = "Cuenta activada exitosamente. Ya puedes iniciar sesión.";
+            }
+            else
+            {
+                TempData["Error"] = "Error al activar la cuenta.";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            var vm = new UpdateProfileViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email!,
+                PhoneNumber = user.PhoneNumber!,
+                ImagePath = user.PathImg
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> Profile(UpdateProfileViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var user = await _userManager.FindByIdAsync(vm.Id);
+            if (user == null) return NotFound();
+
+            user.FirstName = vm.FirstName;
+            user.LastName = vm.LastName;
+            user.Email = vm.Email;
+            user.PhoneNumber = vm.PhoneNumber;
+
+            if (vm.ProfilePicture != null)
+            {
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(vm.ProfilePicture.FileName)}";
+                var folderPath = Path.Combine(_env.WebRootPath, "uploads", "users");
+                Directory.CreateDirectory(folderPath);
+                var filePath = Path.Combine(folderPath, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await vm.ProfilePicture.CopyToAsync(stream);
+                }
+                user.PathImg = $"/uploads/users/{fileName}";
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                if (!string.IsNullOrEmpty(vm.Password))
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    await _userManager.ResetPasswordAsync(user, token, vm.Password);
+                }
+
+                TempData["Success"] = "Perfil actualizado exitosamente.";
+                return RedirectToRoleHome();
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
+            return View(vm);
         }
 
         [HttpGet]

@@ -1,0 +1,68 @@
+@model List<Application.ViewModels.Offers.OfferViewModel>
+@{
+    ViewData["Title"] = "Mis Ofertas";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Mis Ofertas</h2>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Propiedad</th>
+                        <th>Monto Ofertado</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var offer in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="PropertyDetails" asp-route-id="@offer.PropertyId" class="text-decoration-none">
+                                    Ver Propiedad
+                                </a>
+                            </td>
+                            <td>RD$ @offer.OfferAmount.ToString("N0")</td>
+                            <td>
+                                @{
+                                    var badgeClass = offer.Status switch
+                                    {
+                                        "Accepted" => "bg-success",
+                                        "Rejected" => "bg-danger",
+                                        _ => "bg-warning text-dark"
+                                    };
+                                    var statusLabel = offer.Status switch
+                                    {
+                                        "Accepted" => "Aceptada",
+                                        "Rejected" => "Rechazada",
+                                        _ => "Pendiente"
+                                    };
+                                }
+                                <span class="badge @badgeClass">@statusLabel</span>
+                            </td>
+                            <td>
+                                <a asp-action="PropertyDetails" asp-route-id="@offer.PropertyId"
+                                   class="btn btn-outline-primary btn-sm">
+                                    Ver Propiedad
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No has realizado ninguna oferta.
+            <a asp-action="Index" class="alert-link">Explorar propiedades</a>
+        </div>
+    }
+</div>
