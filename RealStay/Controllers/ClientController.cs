@@ -6,6 +6,7 @@ using Application.ViewModels.Offers;
 using Application.ViewModels.Properties;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace RealStay.Controllers
 {
@@ -122,7 +123,10 @@ namespace RealStay.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = "El monto de la oferta no es válido.";
+                var errors = string.Join(" ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => string.IsNullOrEmpty(e.ErrorMessage) ? e.Exception?.Message : e.ErrorMessage));
+                TempData["Error"] = $"El monto de la oferta no es válido. {errors}".Trim();
                 return RedirectToAction("PropertyDetails", new { id = vm.PropertyId });
             }
 

@@ -10,7 +10,7 @@ namespace Application.ViewModels.Offers
     {
         [Required, Range(1, double.MaxValue)]
         public decimal OfferAmount { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         [Required]
         public string PropertyId {get; set;}
     }

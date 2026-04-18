@@ -4,6 +4,8 @@ using Infrastructure.Identity;
 using Infrastructure.Identity.Seeds;
 using Shared.Services;
 using Shared.Settings;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace RealStay
 {
@@ -38,6 +40,17 @@ namespace RealStay
             }
 
             app.UseHttpsRedirection();
+
+            // Forzar cultura invariante para que el model binding de decimal
+            // siempre use punto como separador decimal, sin importar la cultura del SO.
+            var invariantCulture = CultureInfo.InvariantCulture;
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(invariantCulture),
+                SupportedCultures = new[] { invariantCulture },
+                SupportedUICultures = new[] { invariantCulture }
+            });
+
             app.UseRouting();
 
             app.UseAuthentication();
