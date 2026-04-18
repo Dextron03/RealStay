@@ -1,0 +1,53 @@
+@model List<Application.ViewModels.Messages.ChatViewModel>
+@{
+    ViewData["Title"] = "Mis Conversaciones";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Mis Conversaciones</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <div class="list-group shadow-sm">
+            @foreach (var chat in Model)
+            {
+                var otherUserId = chat.SenderId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+                    ? chat.ReceiverId 
+                    : chat.SenderId;
+                <a asp-action="ChatDetail"
+                   asp-route-propertyId="@chat.PropertyId"
+                   asp-route-clientId="@otherUserId"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-start py-3">
+                    <div>
+                        <div class="fw-semibold">Propiedad: @chat.PropertyId</div>
+                        <small class="text-muted">@chat.LastMessage</small>
+                    </div>
+                    <small class="text-muted text-nowrap ms-3">@chat.DateLastMessage.ToString("dd/MM/yyyy HH:mm")</small>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No tienes conversaciones activas. Los clientes podrán contactarte cuando vean tus propiedades.
+        </div>
+    }
+</div>

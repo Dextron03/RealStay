@@ -1,7 +1,10 @@
 using Application.DTOs.Agent;
 using Application.Interfaces.Agent;
+using Application.Interfaces.Offer;
 using Application.ViewModels.Agent.Properties;
 using Application.ViewModels.Agent.Profile;
+using Application.ViewModels.Messages;
+using Application.ViewModels.Offers;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
@@ -26,6 +29,9 @@ namespace Application.Services
         private readonly IGenericRepository<PropertyImprovement> _improvementRepository;
         private readonly IGenericRepository<PropertyImage> _propertyImageRepository;
         private readonly IGenericRepository<PropertyImprovements> _propertyImprovementsRepository;
+        private readonly IGenericRepository<Offer> _offerRepository;
+        private readonly IGenericRepository<Message> _messageRepository;
+        private readonly IMessageRepository _messageRepo;
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
 
@@ -36,6 +42,9 @@ namespace Application.Services
             IGenericRepository<PropertyImprovement> improvementRepository,
             IGenericRepository<PropertyImage> propertyImageRepository,
             IGenericRepository<PropertyImprovements> propertyImprovementsRepository,
+            IGenericRepository<Offer> offerRepository,
+            IGenericRepository<Message> messageRepository,
+            IMessageRepository messageRepo,
             UserManager<AppUser> userManager,
             IMapper mapper)
         {
@@ -45,6 +54,9 @@ namespace Application.Services
             _improvementRepository = improvementRepository;
             _propertyImageRepository = propertyImageRepository;
             _propertyImprovementsRepository = propertyImprovementsRepository;
+            _offerRepository = offerRepository;
+            _messageRepository = messageRepository;
+            _messageRepo = messageRepo;
             _userManager = userManager;
             _mapper = mapper;
         }
@@ -359,6 +371,85 @@ namespace Application.Services
             } while (exists);
 
             return code;
+        }
+
+        public async Task<List<ChatViewModel>> GetChatsForAgentAsync(string agentId)
+        {
+            var chats = await _messageRepo.GetChatsForUserAsync(agentId);
+
+            return chats.Select(m => new ChatViewModel
+            {
+                Id = m.Id,
+                SenderId = m.SenderId,
+                ReceiverId = m.ReceiverId,
+                PropertyId = m.PropertyId,
+                LastMessage = m.Content,
+                DateLastMessage = m.DateSend
+            }).ToList();
+        }
+
+        public async Task<List<MessageViewModel>> GetMessagesByPropertyAsync(string propertyId, string clientId, string agentId)
+        {
+            var messages = await _messageRepository
+                .FindAsync(m =>
+                    m.PropertyId == propertyId &&
+                    ((m.SenderId == clientId && m.ReceiverId == agentId) ||
+                    (m.SenderId == agentId && m.ReceiverId == clientId)));
+
+            return _mapper.Map<List<MessageViewModel>>(messages.OrderBy(m => m.DateSend));
+        }
+
+        public async Task SendMessageAsync(SaveMessageViewModel vm)
+        {
+            var message = _mapper.Map<Message>(vm);
+            await _messageRepository.AddAsync(message);
+            await _messageRepository.SaveChangesAsync();
+        }
+
+        public async Task<List<OfferViewModel>> GetOffersByAgentAsync(string agentId)
+        {
+            var offers = await _offerRepository.FindAsync(
+                o => o.Property.AgentId == agentId,
+                o => o.Property);
+
+            var result = new List<OfferViewModel>();
+            foreach (var offer in offers)
+            {
+                var user = await _userManager.FindByIdAsync(offer.UserId);
+                result.Add(new OfferViewModel
+                {
+                    Id = offer.Id,
+                    PropertyId = offer.PropertyId,
+                    PropertyName = offer.Property?.Name ?? string.Empty,
+                    UserId = offer.UserId,
+                    UserName = user != null ? $"{user.FirstName} {user.LastName}" : string.Empty,
+                    OfferAmount = offer.OfferAmount,
+                    DateRegistration = offer.DateRegistration,
+                    Status = offer.Status
+                });
+            }
+
+            return result.OrderByDescending(o => o.DateRegistration).ToList();
+        }
+
+        public async Task AcceptOfferAsync(string offerId)
+        {
+            var offer = await _offerRepository.GetByIdAsync(offerId);
+            if (offer == null) throw new Exception("Oferta no encontrada");
+
+            offer.Status = OfferStatus.Accepted.ToString();
+            _offerRepository.Update(offer);
+            await _offerRepository.SaveChangesAsync();
+        }
+
+        public async Task RejectOfferAsync(string offerId)
+        {
+            var offer = await _offerRepository.GetByIdAsync(offerId);
+            if (offer == null) throw new Exception("Oferta no encontrada");
+
+            offer.Status = OfferStatus.Rejected.ToString();
+            _offerRepository.Update(offer);
+            await _offerRepository.SaveChangesAsync();
         }
     }
 }

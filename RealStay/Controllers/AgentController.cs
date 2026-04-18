@@ -6,6 +6,8 @@ using Application.Interfaces;
 using Application.Interfaces.Agent;
 using Application.ViewModels.Agent.Profile;
 using Application.ViewModels.Agent.Properties;
+using Application.ViewModels.Messages;
+using Application.ViewModels.Offers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -265,6 +267,113 @@ namespace RealStay.Controllers
                 TempData["Error"] = ex.Message;
                 return RedirectToAction("Properties");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Chats()
+        {
+            var agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(agentId))
+                return RedirectToAction("Index", "Account");
+
+            var chats = await _agentService.GetChatsForAgentAsync(agentId);
+            return View(chats);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChatDetail(string propertyId, string clientId)
+        {
+            var agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(agentId))
+                return RedirectToAction("Index", "Account");
+
+            var messages = await _agentService.GetMessagesByPropertyAsync(propertyId, clientId, agentId);
+
+            ViewData["PropertyId"] = propertyId;
+            ViewData["ClientId"] = clientId;
+            ViewData["AgentId"] = agentId;
+
+            return View(messages);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendMessage(SaveMessageViewModel vm)
+        {
+            var agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(agentId))
+                return RedirectToAction("Index", "Account");
+
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "El mensaje no puede estar vacío.";
+                return RedirectToAction("ChatDetail", new { propertyId = vm.PropertyId, clientId = vm.ReceiverId });
+            }
+
+            try
+            {
+                vm.SenderId = agentId;
+                await _agentService.SendMessageAsync(vm);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("ChatDetail", new { propertyId = vm.PropertyId, clientId = vm.ReceiverId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Offers()
+        {
+            var agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(agentId))
+                return RedirectToAction("Index", "Account");
+
+            var offers = await _agentService.GetOffersByAgentAsync(agentId);
+            return View(offers);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AcceptOffer(string offerId)
+        {
+            var agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(agentId))
+                return RedirectToAction("Index", "Account");
+
+            try
+            {
+                await _agentService.AcceptOfferAsync(offerId);
+                TempData["Success"] = "Oferta aceptada exitosamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("Offers");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RejectOffer(string offerId)
+        {
+            var agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(agentId))
+                return RedirectToAction("Index", "Account");
+
+            try
+            {
+                await _agentService.RejectOfferAsync(offerId);
+                TempData["Success"] = "Oferta rechazada.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("Offers");
         }
     }
 }

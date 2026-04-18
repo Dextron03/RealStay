@@ -1,0 +1,64 @@
+@model List<Application.ViewModels.Messages.MessageViewModel>
+@{
+    ViewData["Title"] = "Conversación";
+    Layout = "_Layout";
+    var propertyId = ViewData["PropertyId"]?.ToString();
+    var clientId = ViewData["ClientId"]?.ToString();
+    var agentId = ViewData["AgentId"]?.ToString();
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a asp-action="Chats" class="btn btn-outline-secondary btn-sm">← Volver a conversaciones</a>
+        <h5 class="mb-0">Chat con Cliente</h5>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body chat-box" id="chatBox" style="height:420px; overflow-y:auto; background:#f8f9fa;">
+            @if (!Model.Any())
+            {
+                <p class="text-muted text-center mt-4">No hay mensajes aún.</p>
+            }
+            @foreach (var msg in Model)
+            {
+                var isMe = msg.SenderId == agentId;
+                <div class="d-flex @(isMe ? "justify-content-end" : "justify-content-start") mb-2">
+                    <div class="px-3 py-2 rounded-3 @(isMe ? "bg-primary text-white" : "bg-white border")"
+                         style="max-width:70%;">
+                        <div>@msg.Content</div>
+                        <small class="@(isMe ? "text-white-50" : "text-muted") d-block text-end" style="font-size:.72rem;">
+                            @msg.DateSend.ToString("dd/MM HH:mm")
+                        </small>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="card-footer">
+            <form asp-action="SendMessage" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="PropertyId" value="@propertyId" />
+                <input type="hidden" name="ReceiverId" value="@clientId" />
+                <div class="input-group">
+                    <input type="text" name="Content" class="form-control" placeholder="Escribe un mensaje..." required maxlength="250" />
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        chatBox.scrollTop = chatBox.scrollHeight;
+    </script>
+}
