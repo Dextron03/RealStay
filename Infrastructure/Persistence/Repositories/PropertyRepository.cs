@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Interfaces;
 using Infrastructure.Identity.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +22,12 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<List<Property>> GetAllWithDetailsAsync()
         {
             return await _dbContext.Properties
+                .Where(p => p.Status == PropertyStatus.Available.ToString())
                 .Include(p => p.PropertyType)
                 .Include(p => p.TypeSale)
                 .Include(p => p.Images)
                 .Include(p => p.Improvements)
-                    .ThenInclude(pi => pi.Improvement) //  que es lo que el repositorio genérico no puede hacer. Por eso necesitas el repositorio específico.
+                    .ThenInclude(pi => pi.Improvement)
                 .ToListAsync();
         }
 
@@ -56,6 +58,7 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<List<Property>> FilterAsync(string? typeSaleName, string? propertyTypeId, decimal? minPrice, decimal? maxPrice, int? rooms, int? bathrooms)
         {
             var query = _dbContext.Properties
+                .Where(p => p.Status == PropertyStatus.Available.ToString())
                 .Include(p => p.PropertyType)
                 .Include(p => p.TypeSale)
                 .Include(p => p.Images)

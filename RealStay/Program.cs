@@ -59,7 +59,7 @@ namespace RealStay
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Index}/{id?}")
+                pattern: "{controller=Home}/{action=Welcome}/{id?}")
                 .WithStaticAssets();
 
             await app.RunIdentitySeedsAsync();

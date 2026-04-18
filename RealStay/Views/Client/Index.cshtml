@@ -75,6 +75,9 @@
                             <p class="card-text">
                                 <span class="badge bg-info text-dark me-1">@p.PropertyTypeName</span>
                                 <span class="badge bg-secondary">@p.TypeSaleName</span>
+                                <span class="badge @(p.Status == "Available" ? "bg-success" : "bg-danger")">
+                                    @(p.Status == "Available" ? "Disponible" : "No disponible")
+                                </span>
                             </p>
                             <p class="card-text">
                                 <strong>RD$ @p.Price.ToString("N0")</strong><br>

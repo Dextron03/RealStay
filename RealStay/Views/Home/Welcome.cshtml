@@ -1,0 +1,209 @@
+@{
+    ViewData["Title"] = "Bienvenido";
+    Layout = "_LandingLayout";
+}
+
+@* ── Hero ── *@
+<section class="rs-hero d-flex align-items-center justify-content-center text-center text-white">
+    <div>
+        <p class="rs-hero-eyebrow">Bienvenido a</p>
+        <h1 class="rs-hero-title">RealStay</h1>
+        <p class="rs-hero-sub">Encuentra la propiedad ideal para comprar o alquilar.<br class="d-none d-md-block" /> Simple, seguro y sin complicaciones.</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-light btn-lg px-4 fw-semibold shadow">
+                <i class="fas fa-search me-2"></i>Ver Propiedades
+            </a>
+            @if (!User.Identity!.IsAuthenticated)
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light btn-lg px-4">
+                    Crear Cuenta
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+@* ── Stats ── *@
+<section class="bg-white py-5 border-bottom">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3">
+                <div class="rs-stat">
+                    <i class="fas fa-building rs-stat-icon text-primary"></i>
+                    <div class="rs-stat-number">@(ViewBag.TotalProperties ?? "+")</div>
+                    <div class="rs-stat-label">Propiedades</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="rs-stat">
+                    <i class="fas fa-user-tie rs-stat-icon text-success"></i>
+                    <div class="rs-stat-number">@(ViewBag.TotalAgents ?? "+")</div>
+                    <div class="rs-stat-label">Agentes</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="rs-stat">
+                    <i class="fas fa-handshake rs-stat-icon text-warning"></i>
+                    <div class="rs-stat-number">@(ViewBag.TotalSold ?? "+")</div>
+                    <div class="rs-stat-label">Propiedades vendidas</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="rs-stat">
+                    <i class="fas fa-users rs-stat-icon text-danger"></i>
+                    <div class="rs-stat-number">@(ViewBag.TotalClients ?? "+")</div>
+                    <div class="rs-stat-label">Clientes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ── Servicios ── *@
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-2">¿Qué puedes hacer en RealStay?</h2>
+        <p class="text-center text-muted mb-5">Todo lo que necesitas para comprar, vender o alquilar una propiedad.</p>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4 rs-service-card">
+                    <div class="rs-service-icon bg-primary bg-opacity-10 text-primary mx-auto mb-4">
+                        <i class="fas fa-search fa-lg"></i>
+                    </div>
+                    <h5 class="fw-bold">Busca tu propiedad</h5>
+                    <p class="text-muted">Filtra por tipo, precio, habitaciones y más para encontrar exactamente lo que buscas.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4 rs-service-card">
+                    <div class="rs-service-icon bg-success bg-opacity-10 text-success mx-auto mb-4">
+                        <i class="fas fa-tag fa-lg"></i>
+                    </div>
+                    <h5 class="fw-bold">Haz una oferta</h5>
+                    <p class="text-muted">Envía tu oferta directamente al agente y negocia el mejor precio desde la plataforma.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4 rs-service-card">
+                    <div class="rs-service-icon bg-warning bg-opacity-10 text-warning mx-auto mb-4">
+                        <i class="fas fa-comments fa-lg"></i>
+                    </div>
+                    <h5 class="fw-bold">Contacta al agente</h5>
+                    <p class="text-muted">Chatea directamente con el agente responsable de la propiedad y resuelve tus dudas al instante.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ── Cómo funciona ── *@
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-2">¿Cómo funciona?</h2>
+        <p class="text-center text-muted mb-5">Tres pasos simples para encontrar tu próximo hogar.</p>
+        <div class="row g-4 align-items-start">
+            <div class="col-md-4 text-center">
+                <div class="rs-step-num mx-auto mb-3">1</div>
+                <h6 class="fw-bold">Crea tu cuenta</h6>
+                <p class="text-muted small">Regístrate como cliente en menos de un minuto y accede a todas las funciones.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="rs-step-num mx-auto mb-3">2</div>
+                <h6 class="fw-bold">Explora propiedades</h6>
+                <p class="text-muted small">Navega el catálogo completo, filtra por tus preferencias y guarda tus favoritas.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="rs-step-num mx-auto mb-3">3</div>
+                <h6 class="fw-bold">Conecta y negocia</h6>
+                <p class="text-muted small">Envía una oferta o chatea con el agente y cierra el trato sin salir de la plataforma.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ── CTA final ── *@
+<section class="rs-cta text-white text-center py-5">
+    <div class="container">
+        <h2 class="fw-bold mb-2">¿Listo para encontrar tu propiedad ideal?</h2>
+        <p class="mb-4 opacity-75">Únete a cientos de clientes que ya confían en RealStay.</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            @if (!User.Identity!.IsAuthenticated)
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg px-5 fw-semibold">
+                    Comenzar ahora
+                </a>
+                <a asp-controller="Account" asp-action="Index" class="btn btn-outline-light btn-lg px-5">
+                    Iniciar Sesión
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="Index" class="btn btn-light btn-lg px-5 fw-semibold">
+                    <i class="fas fa-search me-2"></i>Ver Propiedades
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+<style>
+    /* ── Hero ── */
+    .rs-hero {
+        min-height: 92vh;
+        background: linear-gradient(135deg, #0d6efd 0%, #0a3a8a 50%, #020e26 100%);
+        padding: 3rem 1rem;
+    }
+    .rs-hero-eyebrow {
+        font-size: 1rem;
+        letter-spacing: .2rem;
+        text-transform: uppercase;
+        opacity: .7;
+        margin-bottom: .5rem;
+    }
+    .rs-hero-title {
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 800;
+        letter-spacing: -.02em;
+        line-height: 1;
+        margin-bottom: 1.25rem;
+    }
+    .rs-hero-sub {
+        font-size: 1.15rem;
+        opacity: .85;
+        max-width: 520px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* ── Stats ── */
+    .rs-stat-icon { font-size: 2rem; margin-bottom: .75rem; display: block; }
+    .rs-stat-number { font-size: 2.25rem; font-weight: 800; line-height: 1; }
+    .rs-stat-label { font-size: .85rem; color: #6c757d; margin-top: .25rem; }
+
+    /* ── Service cards ── */
+    .rs-service-card { transition: transform .2s, box-shadow .2s; }
+    .rs-service-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0,0,0,.1) !important; }
+    .rs-service-icon {
+        width: 64px; height: 64px;
+        border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Steps ── */
+    .rs-step-num {
+        width: 52px; height: 52px;
+        border-radius: 50%;
+        background: #0d6efd;
+        color: #fff;
+        font-size: 1.35rem;
+        font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── CTA ── */
+    .rs-cta {
+        background: linear-gradient(135deg, #0a3a8a 0%, #0d6efd 100%);
+    }
+</style>
+}

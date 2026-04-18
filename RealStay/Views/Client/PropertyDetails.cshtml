@@ -2,37 +2,47 @@
 @{
     ViewData["Title"] = Model.Name;
     Layout = "_Layout";
+    bool isAvailable = Model.Status == "Available";
 }
 
-<div class="container mt-4">
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm mb-3">← Volver al listado</a>
+<div class="container py-4">
+
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm mb-4">
+        &#8592; Volver al listado
+    </a>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show">
+        <div class="alert alert-success alert-dismissible fade show mb-4">
             @TempData["Success"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show">
+        <div class="alert alert-danger alert-dismissible fade show mb-4">
             @TempData["Error"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-    <div class="row">
-        {{-- Galería --}}
-        <div class="col-md-7">
+    <div class="row g-4">
+
+        @* ── Columna izquierda: galería + descripción + mejoras ── *@
+        <div class="col-lg-7">
+
+            @* Galería *@
             @if (Model.ImageUrls.Any())
             {
-                <div id="propertyCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
-                    <div class="carousel-inner rounded">
+                <div id="propertyCarousel" class="carousel slide rounded-3 overflow-hidden shadow" data-bs-ride="carousel">
+                    <div class="carousel-inner">
                         @for (int i = 0; i < Model.ImageUrls.Count; i++)
                         {
                             <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img src="@Model.ImageUrls[i]" class="d-block w-100" style="height:360px;object-fit:cover;" alt="Imagen @(i+1)">
+                                <img src="@Model.ImageUrls[i]"
+                                     class="d-block w-100"
+                                     style="height:400px; object-fit:cover;"
+                                     alt="Imagen @(i + 1)" />
                             </div>
                         }
                     </div>
@@ -44,34 +54,44 @@
                         <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
                             <span class="carousel-control-next-icon"></span>
                         </button>
+                        <div class="carousel-indicators">
+                            @for (int i = 0; i < Model.ImageUrls.Count; i++)
+                            {
+                                <button type="button"
+                                        data-bs-target="#propertyCarousel"
+                                        data-bs-slide-to="@i"
+                                        class="@(i == 0 ? "active" : "")"
+                                        aria-label="Imagen @(i + 1)"></button>
+                            }
+                        </div>
                     }
                 </div>
             }
             else
             {
-                <div class="bg-secondary d-flex align-items-center justify-content-center rounded" style="height:360px;">
-                    <span class="text-white fs-5">Sin imágenes</span>
+                <div class="rounded-3 shadow bg-secondary d-flex align-items-center justify-content-center" style="height:400px;">
+                    <span class="text-white fs-5">Sin imágenes disponibles</span>
                 </div>
             }
 
-            {{-- Descripción --}}
-            <div class="card mt-3 shadow-sm">
+            @* Descripción *@
+            <div class="card shadow-sm border-0 mt-4">
                 <div class="card-body">
-                    <h5 class="card-title">Descripción</h5>
-                    <p class="card-text">@Model.Description</p>
+                    <h5 class="card-title fw-semibold mb-2">Descripción</h5>
+                    <p class="card-text text-muted">@Model.Description</p>
                 </div>
             </div>
 
-            {{-- Mejoras --}}
+            @* Mejoras *@
             @if (Model.ImprovementNames.Any())
             {
-                <div class="card mt-3 shadow-sm">
+                <div class="card shadow-sm border-0 mt-3">
                     <div class="card-body">
-                        <h5 class="card-title">Mejoras</h5>
+                        <h5 class="card-title fw-semibold mb-3">Mejoras incluidas</h5>
                         <div class="d-flex flex-wrap gap-2">
                             @foreach (var imp in Model.ImprovementNames)
                             {
-                                <span class="badge bg-success">@imp</span>
+                                <span class="badge rounded-pill bg-success fs-6 fw-normal px-3 py-2">&#10003; @imp</span>
                             }
                         </div>
                     </div>
@@ -79,86 +99,146 @@
             }
         </div>
 
-        {{-- Info + Acciones --}}
-        <div class="col-md-5">
-            <div class="card shadow-sm mb-3">
+        @* ── Columna derecha: info + acciones ── *@
+        <div class="col-lg-5">
+
+            @* Info principal *@
+            <div class="card shadow-sm border-0 mb-3">
                 <div class="card-body">
-                    <h3 class="card-title">@Model.Name</h3>
-                    <p class="text-muted mb-1"><i class="bi bi-geo-alt"></i> @Model.Location</p>
-                    <hr>
-                    <p>
-                        <span class="badge bg-info text-dark me-1">@Model.PropertyTypeName</span>
-                        <span class="badge bg-secondary">@Model.TypeSaleName</span>
+
+                    <div class="d-flex align-items-start justify-content-between mb-1">
+                        <h3 class="fw-bold mb-0">@Model.Name</h3>
+                        @if (isAvailable)
+                        {
+                            <span class="badge bg-success ms-2 mt-1">Disponible</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger ms-2 mt-1">No disponible</span>
+                        }
+                    </div>
+
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-geo-alt-fill me-1"></i>@Model.Location
                     </p>
-                    <h4 class="text-primary">RD$ @Model.Price.ToString("N0")</h4>
-                    <ul class="list-unstyled mt-2">
-                        <li><strong>Habitaciones:</strong> @Model.Rooms</li>
-                        <li><strong>Baños:</strong> @Model.Bathrooms</li>
-                        <li><strong>Tamaño:</strong> @Model.Meters m²</li>
-                        <li><strong>Código:</strong> @Model.Code</li>
-                    </ul>
+
+                    <div class="d-flex gap-2 flex-wrap mb-3">
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2">@Model.PropertyTypeName</span>
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary px-3 py-2">@Model.TypeSaleName</span>
+                    </div>
+
+                    <h4 class="text-primary fw-bold mb-3">RD$ @Model.Price.ToString("N0")</h4>
+
+                    <div class="row g-2 text-center mb-3">
+                        <div class="col-4">
+                            <div class="bg-light rounded-3 py-2">
+                                <div class="fw-bold fs-5">@Model.Rooms</div>
+                                <small class="text-muted">Habitaciones</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="bg-light rounded-3 py-2">
+                                <div class="fw-bold fs-5">@Model.Bathrooms</div>
+                                <small class="text-muted">Baños</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="bg-light rounded-3 py-2">
+                                <div class="fw-bold fs-5">@Model.Meters</div>
+                                <small class="text-muted">m²</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-hash"></i> Código: <strong>@Model.Code</strong>
+                    </p>
+
                     @if (!string.IsNullOrEmpty(Model.AgentName))
                     {
-                        <hr>
-                        <p class="mb-0"><strong>Agente:</strong> @Model.AgentName</p>
-                        <p><strong>Teléfono:</strong> @Model.AgentPhone</p>
+                        <hr class="my-3" />
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
+                                 style="width:42px; height:42px; flex-shrink:0;">
+                                @Model.AgentName[0]
+                            </div>
+                            <div>
+                                <div class="fw-semibold">@Model.AgentName</div>
+                                <small class="text-muted"><i class="bi bi-telephone me-1"></i>@Model.AgentPhone</small>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>
 
-            {{-- Agregar/quitar favorito --}}
-            <div class="card shadow-sm mb-3">
-                <div class="card-body">
-                    <h6 class="card-title">Favoritos</h6>
-                    <form asp-action="AddToWishList" method="post" class="d-inline">
+            @* Favoritos *@
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="card-body d-flex gap-2">
+                    <form asp-action="AddToWishList" method="post" class="flex-fill">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="propertyId" value="@Model.Id" />
-                        <button type="submit" class="btn btn-outline-danger btn-sm me-2">
-                            ♥ Agregar a Favoritos
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                            &#9829; Agregar a Favoritos
                         </button>
                     </form>
-                    <form asp-action="RemoveFromWishList" method="post" class="d-inline">
+                    <form asp-action="RemoveFromWishList" method="post" class="flex-fill">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="propertyId" value="@Model.Id" />
                         <input type="hidden" name="returnTo" value="Details" />
-                        <button type="submit" class="btn btn-outline-secondary btn-sm">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
                             Quitar de Favoritos
                         </button>
                     </form>
                 </div>
             </div>
 
-            {{-- Hacer oferta --}}
-            <div class="card shadow-sm mb-3">
-                <div class="card-body">
-                    <h6 class="card-title">Hacer una Oferta</h6>
-                    <form asp-action="MakeOffer" method="post">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="PropertyId" value="@Model.Id" />
-                        <div class="input-group">
-                            <span class="input-group-text">RD$</span>
-                            <input type="number" name="OfferAmount" class="form-control" min="1" placeholder="Monto" required />
-                            <button type="submit" class="btn btn-primary">Enviar</button>
-                        </div>
-                    </form>
+            @* Oferta *@
+            @if (isAvailable)
+            {
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <h6 class="fw-semibold mb-3">Hacer una Oferta</h6>
+                        <form asp-action="MakeOffer" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="PropertyId" value="@Model.Id" />
+                            <div class="input-group">
+                                <span class="input-group-text">RD$</span>
+                                <input type="number"
+                                       name="OfferAmount"
+                                       class="form-control"
+                                       min="1"
+                                       step="1"
+                                       placeholder="Ingresa tu oferta" />
+                                <button type="submit" class="btn btn-primary">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="alert alert-danger d-flex align-items-center gap-2 mb-3">
+                    <i class="bi bi-x-circle-fill fs-5"></i>
+                    <span>Esta propiedad ya no está disponible para ofertas.</span>
+                </div>
+            }
 
-            {{-- Contactar agente --}}
+            @* Contactar agente *@
             @if (!string.IsNullOrEmpty(Model.AgentName))
             {
-                <div class="card shadow-sm">
+                <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <h6 class="card-title">Contactar al Agente</h6>
+                        <h6 class="fw-semibold mb-3">Contactar al Agente</h6>
                         <a asp-action="ChatDetail"
                            asp-route-propertyId="@Model.Id"
                            asp-route-agentId="@Model.AgentId"
-                           class="btn btn-outline-primary btn-sm w-100">
-                            Abrir Chat
+                           class="btn btn-outline-primary w-100">
+                            <i class="bi bi-chat-dots me-1"></i> Abrir Chat
                         </a>
                     </div>
                 </div>
             }
+
         </div>
     </div>
 </div>

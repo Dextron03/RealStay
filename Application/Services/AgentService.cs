@@ -439,6 +439,14 @@ namespace Application.Services
 
             offer.Status = OfferStatus.Accepted.ToString();
             _offerRepository.Update(offer);
+
+            var property = await _propertyRepository.GetByIdAsync(offer.PropertyId);
+            if (property != null)
+            {
+                property.Status = PropertyStatus.Sold.ToString();
+                _propertyRepository.Update(property);
+            }
+
             await _offerRepository.SaveChangesAsync();
         }
 

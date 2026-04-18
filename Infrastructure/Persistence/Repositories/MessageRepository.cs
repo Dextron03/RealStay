@@ -29,9 +29,9 @@ namespace Infrastructure.Persistence.Repositories
                 .GroupBy(m => new
                 {
                     m.PropertyId,
-                    Pair = string.Compare(m.SenderId, m.ReceiverId) < 0
-                        ? $"{m.SenderId}-{m.ReceiverId}"
-                        : $"{m.ReceiverId}-{m.SenderId}"
+                    Pair = string.CompareOrdinal(m.SenderId, m.ReceiverId) < 0
+                        ? $"{m.SenderId}|{m.ReceiverId}"
+                        : $"{m.ReceiverId}|{m.SenderId}"
                 }).Select(g => g.First())
                 .ToList();
             
