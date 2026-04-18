@@ -1,0 +1,100 @@
+@model List<Application.ViewModels.Offers.OfferViewModel>
+@{
+    ViewData["Title"] = "Ofertas Recibidas";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Ofertas Recibidas</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover shadow-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Propiedad</th>
+                        <th>Cliente</th>
+                        <th>Monto Ofrecido</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var offer in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@offer.PropertyId" class="text-decoration-none">
+                                    @offer.PropertyName
+                                </a>
+                            </td>
+                            <td>@offer.UserName</td>
+                            <td>RD$ @offer.OfferAmount.ToString("N0")</td>
+                            <td>@offer.DateRegistration.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                @switch (offer.Status)
+                                {
+                                    case "Pending":
+                                        <span class="badge bg-warning text-dark">Pendiente</span>
+                                        break;
+                                    case "Accepted":
+                                        <span class="badge bg-success">Aceptada</span>
+                                        break;
+                                    case "Rejected":
+                                        <span class="badge bg-danger">Rechazada</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">@offer.Status</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @if (offer.Status == "Pending")
+                                {
+                                    <form asp-action="AcceptOffer" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="offerId" value="@offer.Id" />
+                                        <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                                    </form>
+                                    <form asp-action="RejectOffer" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="offerId" value="@offer.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Rechazar</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin acciones</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No has recibido ofertas aún. Los clientes podrán ofrecer por tus propiedades.
+        </div>
+    }
+</div>
