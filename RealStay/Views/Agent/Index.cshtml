@@ -1,64 +1,50 @@
 @model List<Application.DTOs.Agent.AgentPropertyDto>
 @{
-    ViewData["Title"] = "Home - Agente";
+    ViewData["Title"] = "Mis Propiedades";
     Layout = "_Layout";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Mis Propiedades</h2>
+<div class="ag-root">
+    <div class="ag-page-head">
+        <div class="ag-page-title">Mis <em>propiedades</em></div>
     </div>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="ag-alert ag-alert-ok">@TempData["Success"]</div>
     }
-
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="ag-alert ag-alert-err">@TempData["Error"]</div>
     }
 
     @if (Model.Any())
     {
-        <div class="row">
-            @foreach (var property in Model)
+        <div class="ag-grid">
+            @foreach (var p in Model)
             {
-                <div class="col-md-4 mb-4">
-                    <div class="card property-card">
-                        <div class="position-relative">
-                            @if (!string.IsNullOrEmpty(property.FirstImage))
-                            {
-                                <img src="@property.FirstImage" class="card-img-top" alt="@property.Name" style="height: 200px; object-fit: cover;">
-                            }
-                            else
-                            {
-                                <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
-                                    <span class="text-white">Sin imagen</span>
-                                </div>
-                            }
-                            @if (property.Status == "Sold" || property.Status == "Vendida")
-                            {
-                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">Vendida</span>
-                            }
+                <div class="ag-card">
+                    <div class="ag-card-img">
+                        @if (!string.IsNullOrEmpty(p.FirstImage))
+                        {
+                            <img src="@p.FirstImage" alt="@p.Name" />
+                        }
+                        else
+                        {
+                            <div class="ag-card-img-inner"></div>
+                        }
+                        @if (p.Status == "Sold" || p.Status == "Vendida")
+                        {
+                            <span class="ag-card-badge">Vendida</span>
+                        }
+                    </div>
+                    <div class="ag-card-body">
+                        <div class="ag-card-name">@p.Name</div>
+                        <div class="ag-card-meta">
+                            @p.PropertyCode · @p.PropertyTypeName · @p.TypeSaleName<br />
+                            @p.NumberRooms hab · @p.NumberBaths baños · @p.Meters m²
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">@property.Name</h5>
-                            <p class="card-text">
-                                <strong>Código:</strong> @property.PropertyCode<br>
-                                <strong>Tipo:</strong> @property.PropertyTypeName<br>
-                                <strong>Venta:</strong> @property.TypeSaleName<br>
-                                <strong>Precio:</strong> RD$ @property.Price.ToString("N0")<br>
-                                <strong>Habitaciones:</strong> @property.NumberRooms | <strong>Baños:</strong> @property.NumberBaths<br>
-                                <strong>Tamaño:</strong> @property.Meters m²
-                            </p>
-                        </div>
+                        <div class="ag-card-price">RD$ @p.Price.ToString("N0")</div>
                     </div>
                 </div>
             }
@@ -66,19 +52,38 @@
     }
     else
     {
-        <div class="alert alert-info">
-            No tienes propiedades registradas. Crea tu primera propiedad.
+        <div class="ag-empty">
+            <div class="ag-empty-title">Sin propiedades</div>
+            <div class="ag-empty-sub">Crea tu primera propiedad para comenzar.</div>
         </div>
     }
 </div>
 
+@section Scripts {
 <style>
-    .property-card {
-        transition: transform 0.2s;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .property-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
+    @@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@@0,300;0,400;1,300&family=DM+Sans:wght@@300;400;500&display=swap');
+    .ag-root { font-family:'DM Sans',system-ui,sans-serif; background:#F7F5F2; padding:2rem 2.5rem; }
+    .ag-page-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:0.5px solid #DDD9D2; }
+    .ag-page-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.6rem; font-weight:300; color:#1C1A17; }
+    .ag-page-title em { font-style:italic; color:#9C7D4E; }
+    .ag-alert { padding:0.75rem 1rem; font-size:0.8rem; border-left:2px solid; margin-bottom:1.25rem; }
+    .ag-alert-ok  { background:#EAF3DE; border-color:#3B6D11; color:#27500A; }
+    .ag-alert-err { background:#FCEBEB; border-color:#A32D2D; color:#791F1F; }
+    .ag-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#DDD9D2; border:0.5px solid #DDD9D2; }
+    .ag-card { background:#fff; display:flex; flex-direction:column; transition:background 0.15s; }
+    .ag-card:hover { background:#FAFAF8; }
+    .ag-card-img { height:180px; background:#E8E4DE; position:relative; overflow:hidden; }
+    .ag-card-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s; }
+    .ag-card:hover .ag-card-img img { transform:scale(1.03); }
+    .ag-card-img-inner { width:100%; height:100%; background:#EAE7E2; }
+    .ag-card-badge { position:absolute; top:8px; right:8px; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; padding:2px 7px; background:#A32D2D; color:#fff; }
+    .ag-card-body { padding:1.1rem; flex:1; }
+    .ag-card-name { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.1rem; font-weight:300; color:#1C1A17; margin-bottom:0.35rem; }
+    .ag-card-meta { font-size:0.72rem; color:#9C9187; line-height:1.7; }
+    .ag-card-price { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.25rem; font-weight:300; color:#9C7D4E; margin-top:0.5rem; }
+    .ag-empty { text-align:center; padding:3.5rem 1rem; background:#fff; border:0.5px solid #DDD9D2; }
+    .ag-empty-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.5rem; font-weight:300; color:#1C1A17; margin-bottom:0.4rem; }
+    .ag-empty-sub { font-size:0.82rem; color:#9C9187; }
+    @@media (max-width:768px) { .ag-grid { grid-template-columns:1fr; } }
 </style>
+}

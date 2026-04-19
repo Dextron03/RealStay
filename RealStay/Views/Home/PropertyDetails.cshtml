@@ -5,172 +5,661 @@
     bool isClient = User.IsInRole("Client");
 }
 
-<div class="container mt-4">
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm mb-3">← Volver al listado</a>
+<div class="pd-root">
+
+    <a asp-action="Index" class="pd-back">← Volver al listado</a>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="pd-alert pd-alert-success">@TempData["Success"]</div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="pd-alert pd-alert-error">@TempData["Error"]</div>
     }
 
-    <div class="row">
-        <!-- Galería -->
-        <div class="col-md-7">
+    <div class="pd-layout">
+
+        <div>
+
             @if (Model.ImageUrls.Any())
             {
-                <div id="propertyCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
-                    <div class="carousel-inner rounded">
+                <div class="pd-gallery-wrap" id="pdGallery">
+                    <div class="pd-gallery">
                         @for (int i = 0; i < Model.ImageUrls.Count; i++)
                         {
-                            <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img src="@Model.ImageUrls[i]" class="d-block w-100" style="height:360px;object-fit:cover;" alt="Imagen @(i+1)">
+                            <div class="pd-slide @(i == 0 ? "active" : "")">
+                                <img src="@Model.ImageUrls[i]" alt="Imagen @(i + 1)" />
                             </div>
                         }
-                    </div>
-                    @if (Model.ImageUrls.Count > 1)
-                    {
-                        <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                        </button>
-                    }
-                </div>
-            }
-            else
-            {
-                <div class="bg-secondary d-flex align-items-center justify-content-center rounded" style="height:360px;">
-                    <span class="text-white fs-5">Sin imágenes</span>
-                </div>
-            }
-
-            <!-- Descripción -->
-            <div class="card mt-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Descripción</h5>
-                    <p class="card-text">@Model.Description</p>
-                </div>
-            </div>
-
-            <!-- Mejoras -->
-            @if (Model.ImprovementNames.Any())
-            {
-                <div class="card mt-3 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Mejoras</h5>
-                        <div class="d-flex flex-wrap gap-2">
-                            @foreach (var imp in Model.ImprovementNames)
+                        @if (Model.ImageUrls.Count > 1)
+                        {
+                            <button class="pd-gallery-nav prev" type="button" onclick="pdSlide(-1)">‹</button>
+                            <button class="pd-gallery-nav next" type="button" onclick="pdSlide(1)">›</button>
+                        }
+                        <div class="pd-gallery-dots" id="pdDots">
+                            @for (int i = 0; i < Model.ImageUrls.Count; i++)
                             {
-                                <span class="badge bg-success">@imp</span>
+                                <div class="pd-dot @(i == 0 ? "active" : "")" onclick="pdGoTo(@i)"></div>
                             }
                         </div>
                     </div>
                 </div>
             }
+            else
+            {
+                <div class="pd-gallery pd-gallery-empty">
+                    <div class="pd-gallery-placeholder">
+                        <div class="pd-gallery-icon">
+                            <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                                <path d="M2 14V7L8 2l6 5v7H10v-4H6v4H2z" stroke="#9C7D4E" stroke-width="0.8" />
+                            </svg>
+                        </div>
+                        <div class="pd-gallery-label">Sin imágenes disponibles</div>
+                    </div>
+                </div>
+            }
+
+            <div class="pd-section">
+                <div class="pd-section-tag">Descripción</div>
+                <div class="pd-section-text">@Model.Description</div>
+            </div>
+
+            @if (Model.ImprovementNames.Any())
+            {
+                <div class="pd-section">
+                    <div class="pd-section-tag">Mejoras</div>
+                    <div class="pd-improvements">
+                        @foreach (var imp in Model.ImprovementNames)
+                        {
+                            <span class="pd-pill">@imp</span>
+                        }
+                    </div>
+                </div>
+            }
         </div>
 
-        <!-- Info + Acciones -->
-        <div class="col-md-5">
-            <div class="card shadow-sm mb-3">
-                <div class="card-body">
-                    <h3 class="card-title">@Model.Name</h3>
-                    <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> @Model.Location</p>
-                    <hr>
-                    <p>
-                        <span class="badge bg-info text-dark me-1">@Model.PropertyTypeName</span>
-                        <span class="badge bg-secondary">@Model.TypeSaleName</span>
-                    </p>
-                    <h4 class="text-primary">RD$ @Model.Price.ToString("N0")</h4>
-                    <ul class="list-unstyled mt-2">
-                        <li><strong>Habitaciones:</strong> @Model.Rooms</li>
-                        <li><strong>Baños:</strong> @Model.Bathrooms</li>
-                        <li><strong>Tamaño:</strong> @Model.Meters m²</li>
-                        <li><strong>Código:</strong> @Model.Code</li>
-                    </ul>
-                    @if (!string.IsNullOrEmpty(Model.AgentName))
-                    {
-                        <hr>
-                        <p class="mb-0"><strong>Agente:</strong> @Model.AgentName</p>
-                        <p><strong>Teléfono:</strong> @Model.AgentPhone</p>
-                    }
+        <div class="pd-panel">
+
+            <div class="pd-info">
+                <div class="pd-prop-name">@Model.Name</div>
+                <div class="pd-prop-loc">@Model.Location</div>
+                <div class="pd-badges">
+                    <span class="pd-badge gold">@Model.PropertyTypeName</span>
+                    <span class="pd-badge">@Model.TypeSaleName</span>
                 </div>
+                <div class="pd-price">RD$ @Model.Price.ToString("N0") <span>DOP</span></div>
+                <div class="pd-divider"></div>
+                <div class="pd-specs">
+                    <div>
+                        <div class="pd-spec-label">Habitaciones</div>
+                        <div class="pd-spec-value">@Model.Rooms</div>
+                    </div>
+                    <div>
+                        <div class="pd-spec-label">Baños</div>
+                        <div class="pd-spec-value">@Model.Bathrooms</div>
+                    </div>
+                    <div>
+                        <div class="pd-spec-label">Tamaño</div>
+                        <div class="pd-spec-value">@Model.Meters m²</div>
+                    </div>
+                    <div>
+                        <div class="pd-spec-label">Código</div>
+                        <div class="pd-spec-value">@Model.Code</div>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.AgentName))
+                {
+                    <div class="pd-divider"></div>
+                    <div class="pd-agent-row">
+                        <div class="pd-agent-avatar">
+                            @(Model.AgentName.Length >= 2
+                                                    ? Model.AgentName.Substring(0, 1).ToUpper() + Model.AgentName.Split(' ').LastOrDefault()?.Substring(0, 1).ToUpper()
+                                                    : Model.AgentName.Substring(0, 1).ToUpper())
+                    </div>
+                    <div>
+                        <div class="pd-agent-name">@Model.AgentName</div>
+                        <div class="pd-agent-phone">@Model.AgentPhone</div>
+                    </div>
+                </div>
+                                }
             </div>
 
             @if (isClient)
             {
-                <!-- Favoritos -->
-                <div class="card shadow-sm mb-3">
-                    <div class="card-body">
-                        <h6 class="card-title">Favoritos</h6>
-                        <form asp-controller="Client" asp-action="AddToWishList" method="post" class="d-inline">
+                <div class="pd-action">
+                    <div class="pd-action-tag">Favoritos</div>
+                    <div class="pd-fav-btns">
+                        <form asp-controller="Client" asp-action="AddToWishList" method="post" style="flex:1;">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="propertyId" value="@Model.Id" />
-                            <button type="submit" class="btn btn-outline-danger btn-sm me-2">
-                                ♥ Agregar a Favoritos
-                            </button>
+                            <button type="submit" class="pd-btn-fav" style="width:100%;">♥ Agregar</button>
                         </form>
-                        <form asp-controller="Client" asp-action="RemoveFromWishList" method="post" class="d-inline">
+                        <form asp-controller="Client" asp-action="RemoveFromWishList" method="post" style="flex:1;">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="propertyId" value="@Model.Id" />
                             <input type="hidden" name="returnTo" value="Details" />
-                            <button type="submit" class="btn btn-outline-secondary btn-sm">
-                                Quitar de Favoritos
-                            </button>
+                            <button type="submit" class="pd-btn-fav remove" style="width:100%;">Quitar</button>
                         </form>
                     </div>
                 </div>
 
-                <!-- Hacer oferta -->
-                <div class="card shadow-sm mb-3">
-                    <div class="card-body">
-                        <h6 class="card-title">Hacer una Oferta</h6>
-                        <form asp-controller="Client" asp-action="MakeOffer" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="PropertyId" value="@Model.Id" />
-                            <div class="input-group">
-                                <span class="input-group-text">RD$</span>
-                                <input type="number" name="OfferAmount" class="form-control" min="1" placeholder="Monto" required />
-                                <button type="submit" class="btn btn-primary">Enviar</button>
-                            </div>
-                        </form>
-                    </div>
+                <div class="pd-action">
+                    <div class="pd-action-tag">Hacer una oferta</div>
+                    <form asp-controller="Client" asp-action="MakeOffer" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="PropertyId" value="@Model.Id" />
+                        <div class="pd-offer-row">
+                            <span class="pd-offer-prefix">RD$</span>
+                            <input type="number" name="OfferAmount" class="pd-offer-input" min="1" placeholder="Monto" required />
+                            <button type="submit" class="pd-btn-submit">Enviar</button>
+                        </div>
+                    </form>
                 </div>
 
-                <!-- Contactar agente -->
                 @if (!string.IsNullOrEmpty(Model.AgentName))
                 {
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h6 class="card-title">Contactar al Agente</h6>
-                            <a asp-controller="Client" asp-action="ChatDetail"
-                               asp-route-propertyId="@Model.Id"
-                               asp-route-agentId="@Model.AgentId"
-                               class="btn btn-outline-primary btn-sm w-100">
-                                Abrir Chat
-                            </a>
-                        </div>
+                    <div class="pd-action">
+                        <div class="pd-action-tag">Agente</div>
+                        <a asp-controller="Client" asp-action="ChatDetail"
+                           asp-route-propertyId="@Model.Id"
+                           asp-route-agentId="@Model.AgentId"
+                           class="pd-btn-chat">
+                            Abrir chat con el agente
+                        </a>
                     </div>
                 }
             }
             else
             {
-                <!-- Usuario autenticado sin rol Client -->
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
+                <div class="pd-info-notice">
                     Las funciones de favoritos, ofertas y chat están disponibles solo para clientes registrados.
                 </div>
             }
+
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@@0,300;0,400;1,300&family=DM+Sans:wght@@300;400;500&display=swap');
+
+        .pd-root {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: #F7F5F2;
+            padding: 2rem 2.5rem;
+        }
+
+        .pd-back {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #9C9187;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 0.5px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+            .pd-back:hover {
+                color: #9C7D4E;
+                border-color: #9C7D4E;
+            }
+
+        .pd-alert {
+            padding: 0.8rem 1.1rem;
+            font-size: 0.8rem;
+            border-left: 2px solid;
+            margin-bottom: 1.25rem;
+            border-radius: 0;
+        }
+
+        .pd-alert-success {
+            background: #EAF3DE;
+            border-color: #3B6D11;
+            color: #27500A;
+        }
+
+        .pd-alert-error {
+            background: #FCEBEB;
+            border-color: #A32D2D;
+            color: #791F1F;
+        }
+
+        .pd-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .pd-gallery {
+            height: 360px;
+            background: #1C1A17;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pd-slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+            .pd-slide.active {
+                display: block;
+            }
+
+            .pd-slide img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+        .pd-gallery-empty {
+            flex-direction: column;
+        }
+
+        .pd-gallery-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pd-gallery-icon {
+            width: 48px;
+            height: 48px;
+            border: 0.5px solid rgba(184,149,90,0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pd-gallery-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #6B6560;
+        }
+
+        .pd-gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border: 0.5px solid rgba(184,149,90,0.3);
+            background: rgba(28,26,23,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #9C7D4E;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+            .pd-gallery-nav:hover {
+                background: rgba(156,125,78,0.3);
+            }
+
+            .pd-gallery-nav.prev {
+                left: 12px;
+            }
+
+            .pd-gallery-nav.next {
+                right: 12px;
+            }
+
+        .pd-gallery-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+        }
+
+        .pd-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .pd-dot.active {
+                background: #9C7D4E;
+            }
+
+        .pd-section {
+            background: #fff;
+            border: 0.5px solid #DDD9D2;
+            padding: 1.4rem 1.5rem;
+            margin-top: 1px;
+        }
+
+        .pd-section-tag {
+            font-size: 0.58rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #9C7D4E;
+            margin-bottom: 0.65rem;
+        }
+
+        .pd-section-text {
+            font-size: 0.85rem;
+            color: #6B6560;
+            line-height: 1.75;
+            font-weight: 300;
+        }
+
+        .pd-improvements {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .pd-pill {
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border: 0.5px solid #C4B99A;
+            color: #6B6560;
+            border-radius: 0;
+            background: #FAFAF8;
+        }
+
+        .pd-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .pd-info {
+            background: #fff;
+            border: 0.5px solid #DDD9D2;
+            padding: 1.5rem;
+        }
+
+        .pd-prop-name {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.7rem;
+            font-weight: 300;
+            color: #1C1A17;
+            line-height: 1.1;
+            margin-bottom: 0.4rem;
+        }
+
+        .pd-prop-loc {
+            font-size: 0.75rem;
+            color: #9C9187;
+            margin-bottom: 1rem;
+        }
+
+        .pd-badges {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .pd-badge {
+            font-size: 0.56rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 3px 9px;
+            background: #1C1A17;
+            color: #F7F5F2;
+            border-radius: 0;
+        }
+
+            .pd-badge.gold {
+                background: #9C7D4E;
+                color: #1C1A17;
+            }
+
+        .pd-price {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 300;
+            color: #1C1A17;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+            .pd-price span {
+                font-size: 0.7rem;
+                font-family: 'DM Sans', system-ui, sans-serif;
+                color: #9C9187;
+                margin-left: 4px;
+            }
+
+        .pd-divider {
+            height: 0.5px;
+            background: #E8E4DE;
+            margin: 1rem 0;
+        }
+
+        .pd-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem 1rem;
+        }
+
+        .pd-spec-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #9C9187;
+            margin-bottom: 2px;
+        }
+
+        .pd-spec-value {
+            font-size: 0.88rem;
+            color: #1C1A17;
+            font-weight: 500;
+        }
+
+        .pd-agent-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pd-agent-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #EAE7E2;
+            border: 0.5px solid #DDD9D2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: #9C7D4E;
+            flex-shrink: 0;
+        }
+
+        .pd-agent-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1C1A17;
+        }
+
+        .pd-agent-phone {
+            font-size: 0.72rem;
+            color: #9C9187;
+        }
+
+        .pd-action {
+            background: #fff;
+            border: 0.5px solid #DDD9D2;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .pd-action-tag {
+            font-size: 0.58rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #9C7D4E;
+            margin-bottom: 0.85rem;
+        }
+
+        .pd-fav-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .pd-btn-fav {
+            flex: 1;
+            padding: 0.65rem 0.5rem;
+            font-size: 0.64rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border: 0.5px solid #1C1A17;
+            background: transparent;
+            color: #1C1A17;
+            border-radius: 0;
+            cursor: pointer;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            transition: background 0.2s, color 0.2s;
+        }
+
+            .pd-btn-fav:hover {
+                background: #1C1A17;
+                color: #F7F5F2;
+            }
+
+            .pd-btn-fav.remove {
+                border-color: #D4CFC8;
+                color: #9C9187;
+            }
+
+                .pd-btn-fav.remove:hover {
+                    background: #F7F5F2;
+                    color: #6B6560;
+                    border-color: #9C9187;
+                }
+
+        .pd-offer-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .pd-offer-prefix {
+            font-size: 0.75rem;
+            color: #9C9187;
+            white-space: nowrap;
+        }
+
+        .pd-offer-input {
+            flex: 1;
+            padding: 0.65rem 0.75rem;
+            border: 0.5px solid #D4CFC8;
+            border-radius: 0;
+            background: #FAFAF8;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            font-size: 0.85rem;
+            color: #1C1A17;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+            .pd-offer-input:focus {
+                border-color: #9C7D4E;
+                background: #fff;
+            }
+
+        .pd-btn-submit {
+            padding: 0.65rem 1.1rem;
+            background: #1C1A17;
+            color: #F7F5F2;
+            border: none;
+            border-radius: 0;
+            font-size: 0.64rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+            .pd-btn-submit:hover {
+                background: #9C7D4E;
+            }
+
+        .pd-btn-chat {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            border: 0.5px solid #1C1A17;
+            background: transparent;
+            color: #1C1A17;
+            border-radius: 0;
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+            .pd-btn-chat:hover {
+                background: #1C1A17;
+                color: #F7F5F2;
+            }
+
+        .pd-info-notice {
+            background: #F7F5F2;
+            border: 0.5px solid #DDD9D2;
+            border-left: 2px solid #9C7D4E;
+            padding: 1rem 1.25rem;
+            font-size: 0.78rem;
+            color: #6B6560;
+            line-height: 1.65;
+        }
+
+        @@media (max-width: 860px) {
+            .pd-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .pd-root {
+                padding: 1.5rem 1.25rem;
+            }
+        }
+    </style>
+
+    <script>
+        var pdIndex = 0;
+        var pdSlides = document.querySelectorAll('.pd-slide');
+        var pdDotEls = document.querySelectorAll('.pd-dot');
+
+        function pdGoTo(n) {
+            pdSlides[pdIndex].classList.remove('active');
+            pdDotEls[pdIndex].classList.remove('active');
+            pdIndex = (n + pdSlides.length) % pdSlides.length;
+            pdSlides[pdIndex].classList.add('active');
+            pdDotEls[pdIndex].classList.add('active');
+        }
+        function pdSlide(dir) { pdGoTo(pdIndex + dir); }
+    </script>
+}

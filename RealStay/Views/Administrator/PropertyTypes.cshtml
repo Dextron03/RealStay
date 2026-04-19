@@ -1,35 +1,36 @@
 ﻿@model List<Application.DTOs.Administrator.Properties.PropertiesDto>
 @{
-    ViewData["Title"] = "Tipo de Propiedades";
+    ViewData["Title"] = "Tipos de Propiedad";
 }
 
-<h2 class="mb-4">Mantenimiento de Tipo de Propiedades</h2>
+<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 
-<a asp-action="CreatePropertyType" class="btn btn-primary mb-3">Crear Tipo de Propiedad</a>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Propiedades</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var type in Model)
-        {
-            <tr>
-                <td>@type.TypeName</td>
-                <td>@type.Description</td>
-                <td>@type.PropertyCount</td>
-                <td>
-                    <a asp-action="EditPropertyType" asp-route-id="@type.Id"
-                       class="btn btn-sm btn-primary">Editar</a>
-                    <a asp-action="DeletePropertyType" asp-route-id="@type.Id"
-                       class="btn btn-sm btn-danger">Eliminar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="adm-root">
+    <div class="adm-page-head">
+        <div class="adm-page-title">Tipos de <em>propiedad</em></div>
+        <a asp-action="CreatePropertyType" class="adm-btn adm-btn-dark">Crear tipo</a>
+    </div>
+    <div class="adm-table-wrap">
+        <table class="adm-table">
+            <thead><tr><th>Nombre</th><th>Descripción</th><th>Propiedades</th><th>Acciones</th></tr></thead>
+            <tbody>
+                @foreach (var type in Model)
+                {
+                    <tr>
+                        <td>@type.TypeName</td>
+                        <td class="adm-muted">@type.Description</td>
+                        <td style="text-align:center;">@type.PropertyCount</td>
+                        <td>
+                            <div class="adm-actions">
+                                <a asp-action="EditPropertyType" asp-route-id="@type.Id"
+                                   class="adm-btn adm-btn-sm adm-btn-dark">Editar</a>
+                                <a asp-action="DeletePropertyType" asp-route-id="@type.Id"
+                                   class="adm-btn adm-btn-sm adm-btn-danger">Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -4,50 +4,70 @@
     Layout = "_Layout";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Mis Conversaciones</h2>
+<div class="ag-root">
+    <div class="ag-page-head">
+        <div class="ag-page-title">Mis <em>conversaciones</em></div>
+    </div>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="ag-alert ag-alert-ok">@TempData["Success"]</div>
     }
-
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="ag-alert ag-alert-err">@TempData["Error"]</div>
     }
 
     @if (Model.Any())
     {
-        <div class="list-group shadow-sm">
+        <div class="ag-chat-list">
             @foreach (var chat in Model)
             {
-                var otherUserId = chat.SenderId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
-                    ? chat.ReceiverId 
+                var otherUserId = chat.SenderId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                    ? chat.ReceiverId
                     : chat.SenderId;
+
                 <a asp-action="ChatDetail"
                    asp-route-propertyId="@chat.PropertyId"
                    asp-route-clientId="@otherUserId"
-                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-start py-3">
+                   class="ag-chat-item">
                     <div>
-                        <div class="fw-semibold">Propiedad: @chat.PropertyId</div>
-                        <small class="text-muted">@chat.LastMessage</small>
+                        <div class="ag-chat-prop">Propiedad #@chat.PropertyId</div>
+                        <div class="ag-chat-last">@chat.LastMessage</div>
                     </div>
-                    <small class="text-muted text-nowrap ms-3">@chat.DateLastMessage.ToString("dd/MM/yyyy HH:mm")</small>
+                    <div class="ag-chat-time">@chat.DateLastMessage.ToString("dd/MM HH:mm")</div>
                 </a>
             }
         </div>
     }
     else
     {
-        <div class="alert alert-info">
-            No tienes conversaciones activas. Los clientes podrán contactarte cuando vean tus propiedades.
+        <div class="ag-empty">
+            <div class="ag-empty-title">Sin conversaciones</div>
+            <div class="ag-empty-sub">Los clientes podrán contactarte cuando vean tus propiedades.</div>
         </div>
     }
 </div>
+
+@section Scripts {
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@@0,300;0,400;1,300&family=DM+Sans:wght@@300;400;500&display=swap');
+    .ag-root { font-family:'DM Sans',system-ui,sans-serif; background:#F7F5F2; padding:2rem 2.5rem; }
+    .ag-page-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:0.5px solid #DDD9D2; }
+    .ag-page-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.6rem; font-weight:300; color:#1C1A17; }
+    .ag-page-title em { font-style:italic; color:#9C7D4E; }
+    .ag-alert { padding:0.75rem 1rem; font-size:0.8rem; border-left:2px solid; margin-bottom:1.25rem; }
+    .ag-alert-ok  { background:#EAF3DE; border-color:#3B6D11; color:#27500A; }
+    .ag-alert-err { background:#FCEBEB; border-color:#A32D2D; color:#791F1F; }
+    .ag-chat-list { background:#fff; border:0.5px solid #DDD9D2; }
+    .ag-chat-item { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.25rem; border-bottom:0.5px solid #E8E4DE; cursor:pointer; transition:background 0.15s; text-decoration:none; }
+    .ag-chat-item:last-child { border-bottom:none; }
+    .ag-chat-item:hover { background:#FAFAF8; }
+    .ag-chat-prop { font-size:0.85rem; font-weight:500; color:#1C1A17; margin-bottom:0.2rem; }
+    .ag-chat-last { font-size:0.75rem; color:#9C9187; }
+    .ag-chat-time { font-size:0.68rem; color:#B8B2AA; white-space:nowrap; margin-left:1rem; }
+    .ag-empty { text-align:center; padding:3.5rem 1rem; background:#fff; border:0.5px solid #DDD9D2; }
+    .ag-empty-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.5rem; font-weight:300; color:#1C1A17; margin-bottom:0.4rem; }
+    .ag-empty-sub { font-size:0.82rem; color:#9C9187; }
+</style>
+}

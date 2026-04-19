@@ -7,103 +7,363 @@
     var saleTypes = ViewData["SaleTypes"] as List<Application.DTOs.Administrator.Sales.SalesTypeDto>;
 }
 
-<div class="container-fluid mt-4">
-    <div class="row">
-        <!-- Sidebar Filtros -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title mb-4"><i class="fas fa-filter me-2"></i>Filtrar Propiedades</h5>
-                    <form asp-action="Index" method="get">
-                        <div class="mb-3">
-                            <label class="form-label">Tipo de Propiedad</label>
-                            <select name="PropertyTypeId" class="form-select">
-                                <option value="">Todos</option>
-                                @foreach (var type in propertyTypes!)
-                                {
-                                    <!option value="@type.Id" @(filters?.PropertyTypeId == type.Id ? "selected" : "")>@type.TypeName</!option>
-                                }
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Tipo de Venta</label>
-                            <select name="TypeSaleName" class="form-select">
-                                <option value="">Todos</option>
-                                @foreach (var sale in saleTypes!)
-                                {
-                                    <!option value="@sale.TypeName" @(filters?.TypeSaleName == sale.TypeName ? "selected" : "")>@sale.TypeName</!option>
-                                }
-                            </select>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label class="form-label">Precio Mín.</label>
-                                <input type="number" name="MinPrice" class="form-control" value="@filters?.MinPrice" placeholder="0" />
-                            </div>
-                            <div class="col">
-                                <label class="form-label">Precio Máx.</label>
-                                <input type="number" name="MaxPrice" class="form-control" value="@filters?.MaxPrice" placeholder="Máx" />
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label class="form-label">Hab.</label>
-                                <input type="number" name="Rooms" class="form-control" value="@filters?.Rooms" placeholder="0" />
-                            </div>
-                            <div class="col">
-                                <label class="form-label">Baños</label>
-                                <input type="number" name="Bathrooms" class="form-control" value="@filters?.Bathrooms" placeholder="0" />
-                            </div>
-                        </div>
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
-                            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="cat-layout">
+
+    <aside class="cat-sidebar">
+        <div class="cat-sidebar-head">
+            <div class="cat-sidebar-tag">Búsqueda</div>
+            <div class="cat-sidebar-title">Filtrar</div>
         </div>
 
-        <!-- Grid de Propiedades -->
-        <div class="col-md-9">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                @if (Model.Any())
-                {
-                    @foreach (var item in Model)
+        <form asp-action="Index" method="get">
+
+            <label class="cat-filter-label">Tipo de propiedad</label>
+            <div class="cat-select-wrap">
+                <select name="PropertyTypeId" class="cat-select">
+                    <option value="">Todos</option>
+                    @foreach (var type in propertyTypes!)
                     {
-                        <div class="col">
-                            <div class="card h-100 shadow-sm border-0 property-card">
-                                <div class="position-relative">
-                                    <img src="@(item.ImageUrls.Any() ? item.ImageUrls.First() : "/img/no-image.jpg")" class="card-img-top" style="height: 200px; object-fit: cover;" alt="@item.Name">
-                                    <span class="badge bg-primary position-absolute top-0 end-0 m-2">@item.TypeSaleName</span>
-                                    <span class="badge bg-dark position-absolute top-0 start-0 m-2">@item.PropertyTypeName</span>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title text-truncate">@item.Name</h5>
-                                    <p class="card-text text-muted small"><i class="fas fa-map-marker-alt me-1"></i> @item.Location</p>
-                                    <h4 class="text-primary fw-bold">RD$ @item.Price.ToString("N0")</h4>
-                                    <div class="d-flex justify-content-between text-muted border-top pt-2">
-                                        <span><i class="fas fa-bed me-1"></i> @item.Rooms</span>
-                                        <span><i class="fas fa-bath me-1"></i> @item.Bathrooms</span>
-                                        <span><i class="fas fa-ruler-combined me-1"></i> @item.Meters m²</span>
+                        var isSelectedType = filters?.PropertyTypeId == type.Id;
+                        <option value="@type.Id" selected="@isSelectedType">@type.TypeName</option>
+                    }
+                </select>
+            </div>
+
+            <label class="cat-filter-label">Tipo de venta</label>
+            <div class="cat-select-wrap">
+                <select name="TypeSaleName" class="cat-select">
+                    <option value="">Todos</option>
+                    @foreach (var sale in saleTypes!)
+                    {
+                        var isSelectedSale = filters?.TypeSaleName == sale.TypeName;
+                        <option value="@sale.TypeName" selected="@isSelectedSale">@sale.TypeName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="cat-divider"></div>
+
+            <label class="cat-filter-label">Precio</label>
+            <div class="cat-row-inputs">
+                <input type="number" name="MinPrice" class="cat-input" value="@filters?.MinPrice" placeholder="Mín" />
+                <input type="number" name="MaxPrice" class="cat-input" value="@filters?.MaxPrice" placeholder="Máx" />
+            </div>
+
+            <label class="cat-filter-label">Habitaciones y baños</label>
+            <div class="cat-row-inputs">
+                <input type="number" name="Rooms" class="cat-input" value="@filters?.Rooms" placeholder="Hab." />
+                <input type="number" name="Bathrooms" class="cat-input" value="@filters?.Bathrooms" placeholder="Baños" />
+            </div>
+
+            <div class="cat-divider"></div>
+            <button type="submit" class="cat-btn-apply">Aplicar filtros</button>
+            <a asp-action="Index" class="cat-btn-clear">Limpiar</a>
+
+        </form>
+
+    </aside>
+
+    <main class="cat-main">
+
+        <div class="cat-main-head">
+            <div class="cat-main-title">Catálogo de <em>propiedades</em></div>
+            <div class="cat-count">@Model.Count resultado@(Model.Count != 1 ? "s" : "")</div>
+        </div>
+
+        <div class="cat-grid">
+            @if (Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <div class="cat-card">
+                        <div class="cat-img">
+                            @if (item.ImageUrls.Any())
+                            {
+                                <img src="@item.ImageUrls.First()" alt="@item.Name" />
+                            }
+                            else
+                            {
+                                <div class="cat-img-placeholder">
+                                    <div class="cat-img-icon">
+                                        <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+                                            <path d="M2 14V7L8 2l6 5v7H10v-4H6v4H2z" stroke="#9C7D4E" stroke-width="0.8"/>
+                                        </svg>
                                     </div>
                                 </div>
-                                <div class="card-footer bg-white border-0 pb-3">
-                                    <a asp-action="PropertyDetails" asp-route-id="@item.Id" class="btn btn-outline-primary w-100">Ver Detalles</a>
-                                </div>
+                            }
+                            <span class="cat-badge-sale">@item.TypeSaleName</span>
+                            <span class="cat-badge-type">@item.PropertyTypeName</span>
+                        </div>
+                        <div class="cat-card-body">
+                            <div class="cat-prop-name">@item.Name</div>
+                            <div class="cat-prop-loc">@item.Location</div>
+                            <div class="cat-prop-price">
+                                RD$ @item.Price.ToString("N0")
+                                <span>DOP</span>
                             </div>
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="col-12 text-center py-5">
-                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                        <h3>No se encontraron propiedades</h3>
-                        <p class="text-muted">Intenta con otros criterios de búsqueda.</p>
+                        <div class="cat-card-footer">
+                            <div class="cat-meta">
+                                <div class="cat-meta-item"><div class="cat-meta-dot"></div>@item.Rooms hab.</div>
+                                <div class="cat-meta-item"><div class="cat-meta-dot"></div>@item.Bathrooms baños</div>
+                                <div class="cat-meta-item"><div class="cat-meta-dot"></div>@item.Meters m²</div>
+                            </div>
+                            <a asp-action="PropertyDetails" asp-route-id="@item.Id" class="cat-detail-link">Ver →</a>
+                        </div>
                     </div>
                 }
-            </div>
+            }
+            else
+            {
+                <div class="cat-empty">
+                    <div class="cat-empty-title">Sin resultados</div>
+                    <div class="cat-empty-sub">Intenta con otros criterios de búsqueda.</div>
+                </div>
+            }
         </div>
-    </div>
+
+    </main>
 </div>
+
+@section Scripts {
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@@0,300;0,400;1,300&family=DM+Sans:wght@@300;400;500&display=swap');
+
+    .cat-layout {
+        font-family: 'DM Sans', system-ui, sans-serif;
+        background: #F7F5F2;
+        display: flex;
+        min-height: calc(100vh - 60px);
+    }
+
+    .cat-sidebar {
+        width: 248px;
+        flex-shrink: 0;
+        background: #fff;
+        border-right: 0.5px solid #DDD9D2;
+        padding: 2rem 1.5rem;
+    }
+    .cat-sidebar-head { margin-bottom: 1.75rem; }
+    .cat-sidebar-tag {
+        font-size: 0.58rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #9C7D4E;
+        margin-bottom: 0.35rem;
+    }
+    .cat-sidebar-title {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.3rem;
+        font-weight: 300;
+        color: #1C1A17;
+    }
+    .cat-divider { height: 0.5px; background: #E8E4DE; margin: 1.1rem 0 1.25rem; }
+    .cat-filter-label {
+        font-size: 0.62rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #6B6560;
+        display: block;
+        margin-bottom: 0.45rem;
+    }
+    .cat-select-wrap { position: relative; margin-bottom: 1rem; }
+    .cat-select-wrap::after {
+        content: '';
+        position: absolute;
+        right: 10px; top: 50%;
+        transform: translateY(-50%);
+        border: 4px solid transparent;
+        border-top-color: #9C7D4E;
+        pointer-events: none;
+    }
+    .cat-select, .cat-input {
+        width: 100%;
+        padding: 0.62rem 0.85rem;
+        border: 0.5px solid #D4CFC8;
+        border-radius: 1px;
+        background: #FAFAF8;
+        font-family: 'DM Sans', system-ui, sans-serif;
+        font-size: 0.82rem;
+        color: #1C1A17;
+        outline: none;
+        appearance: none;
+        box-sizing: border-box;
+        transition: border-color 0.2s, background 0.2s;
+    }
+    .cat-select:focus, .cat-input:focus { border-color: #9C7D4E; background: #fff; }
+    .cat-input::placeholder { color: #B8B2AA; }
+    .cat-row-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .cat-btn-apply {
+        display: block;
+        width: 100%;
+        padding: 0.75rem;
+        background: #1C1A17;
+        color: #F7F5F2;
+        border: none;
+        border-radius: 1px;
+        font-family: 'DM Sans', system-ui, sans-serif;
+        font-size: 0.66rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    .cat-btn-apply:hover { background: #9C7D4E; }
+    .cat-btn-clear {
+        display: block;
+        width: 100%;
+        padding: 0.75rem;
+        background: transparent;
+        color: #6B6560;
+        border: 0.5px solid #D4CFC8;
+        border-radius: 1px;
+        font-family: 'DM Sans', system-ui, sans-serif;
+        font-size: 0.66rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: border-color 0.2s, color 0.2s;
+        text-align: center;
+        text-decoration: none;
+    }
+    .cat-btn-clear:hover { border-color: #9C7D4E; color: #9C7D4E; }
+
+    .cat-main { flex: 1; padding: 2rem 2rem; }
+    .cat-main-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 0.5px solid #DDD9D2;
+    }
+    .cat-main-title {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.6rem;
+        font-weight: 300;
+        color: #1C1A17;
+    }
+    .cat-main-title em { font-style: italic; color: #9C7D4E; }
+    .cat-count {
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #9C9187;
+    }
+
+    .cat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: #DDD9D2;
+        border: 0.5px solid #DDD9D2;
+    }
+    .cat-card {
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        transition: background 0.15s;
+    }
+    .cat-card:hover { background: #FAFAF8; }
+
+    /* Imagen */
+    .cat-img {
+        height: 190px;
+        position: relative;
+        overflow: hidden;
+        background: #E8E4DE;
+    }
+    .cat-img img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.4s;
+    }
+    .cat-card:hover .cat-img img { transform: scale(1.03); }
+    .cat-img-placeholder {
+        width: 100%; height: 100%;
+        background: #EAE7E2;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .cat-img-icon {
+        width: 36px; height: 36px;
+        border: 0.5px solid #C4B99A;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .cat-badge-sale {
+        position: absolute; top: 10px; right: 10px;
+        font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase;
+        background: #1C1A17; color: #F7F5F2;
+        padding: 3px 8px; border-radius: 0;
+    }
+    .cat-badge-type {
+        position: absolute; top: 10px; left: 10px;
+        font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase;
+        background: #9C7D4E; color: #1C1A17;
+        padding: 3px 8px; border-radius: 0;
+    }
+
+    .cat-card-body { padding: 1.1rem 1.1rem 0.7rem; flex: 1; }
+    .cat-prop-name {
+        font-size: 0.9rem; font-weight: 500; color: #1C1A17;
+        margin-bottom: 0.3rem;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cat-prop-loc { font-size: 0.72rem; color: #9C9187; margin-bottom: 0.7rem; }
+    .cat-prop-price {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.45rem; font-weight: 300; color: #1C1A17; line-height: 1;
+    }
+    .cat-prop-price span {
+        font-size: 0.68rem;
+        font-family: 'DM Sans', system-ui, sans-serif;
+        color: #9C9187; margin-left: 3px;
+    }
+
+    .cat-card-footer {
+        padding: 0.75rem 1.1rem;
+        border-top: 0.5px solid #E8E4DE;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .cat-meta { display: flex; gap: 0.85rem; }
+    .cat-meta-item {
+        font-size: 0.68rem; color: #9C9187;
+        display: flex; align-items: center; gap: 4px;
+    }
+    .cat-meta-dot { width: 3px; height: 3px; background: #9C7D4E; border-radius: 50%; flex-shrink: 0; }
+    .cat-detail-link {
+        font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+        color: #9C7D4E; text-decoration: none;
+        border-bottom: 0.5px solid transparent;
+        transition: border-color 0.2s;
+    }
+    .cat-detail-link:hover { border-color: #9C7D4E; }
+
+    .cat-empty {
+        grid-column: 1 / -1; padding: 5rem 2rem;
+        text-align: center; background: #fff;
+    }
+    .cat-empty-title {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.8rem; font-weight: 300; color: #1C1A17; margin-bottom: 0.5rem;
+    }
+    .cat-empty-sub { font-size: 0.82rem; color: #9C9187; font-weight: 300; }
+
+    @@media (max-width: 900px) {
+        .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @@media (max-width: 640px) {
+        .cat-layout { flex-direction: column; }
+        .cat-sidebar { width: 100%; border-right: none; border-bottom: 0.5px solid #DDD9D2; }
+        .cat-grid { grid-template-columns: 1fr; }
+    }
+</style>
+}

@@ -1,93 +1,325 @@
 @model Application.ViewModels.Login.RegisterViewModel
 @{
     ViewData["Title"] = "Registro";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center py-4">
-                    <h3 class="mb-0 fw-bold">Únete a RealStay</h3>
-                    <p class="mb-0 small">Crea tu cuenta para empezar a buscar tu próximo hogar</p>
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: #F7F5F2;
+            min-height: 100vh;
+            padding: 3rem 1rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .register-card {
+            background: #fff;
+            border: 0.5px solid #DDD9D2;
+            border-radius: 2px;
+            width: 100%;
+            max-width: 680px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #1C1A17;
+            padding: 2rem 2.5rem 1.8rem;
+            text-align: center;
+        }
+        .header-mark {
+            width: 28px;
+            height: 1.5px;
+            background: #9C7D4E;
+            margin: 0 auto 1rem;
+        }
+        .header-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: #F7F5F2;
+            letter-spacing: 0.05em;
+        }
+        .header-title em { font-style: italic; color: #C4985E; }
+        .header-sub {
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #6B6560;
+            margin-top: 0.4rem;
+        }
+
+        .card-body { padding: 2.2rem 2.5rem 2rem; }
+
+        .section-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #9C7D4E;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 0.5px;
+            background: #E8E4DE;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .form-row.full { grid-template-columns: 1fr; }
+
+        .field { display: flex; flex-direction: column; gap: 0.45rem; }
+
+        .field label {
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #6B6560;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 0.72rem 0.9rem;
+            border: 0.5px solid #D4CFC8;
+            border-radius: 1px;
+            background: #FAFAF8;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            font-size: 0.88rem;
+            color: #1C1A17;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            appearance: none;
+        }
+
+        .field input::placeholder { color: #B8B2AA; }
+        .field input:focus,
+        .field select:focus { border-color: #9C7D4E; background: #fff; }
+
+        .field .text-danger {
+            font-size: 0.72rem;
+            color: #A32D2D;
+        }
+
+        .select-wrap { position: relative; }
+        .select-wrap::after {
+            content: '';
+            position: absolute;
+            right: 12px; top: 50%;
+            transform: translateY(-50%);
+            border: 4px solid transparent;
+            border-top-color: #9C7D4E;
+            pointer-events: none;
+        }
+
+        .file-wrapper {
+            position: relative;
+        }
+        .file-wrapper input[type="file"] {
+            opacity: 0;
+            position: absolute;
+            inset: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .file-display {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.72rem 0.9rem;
+            border: 0.5px dashed #C4B99A;
+            border-radius: 1px;
+            background: #FAFAF8;
+            font-size: 0.82rem;
+            color: #9C9187;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .file-display:hover { border-color: #9C7D4E; }
+        .file-icon {
+            width: 16px; height: 16px;
+            border: 1.5px solid #9C7D4E;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px;
+            color: #9C7D4E;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .validation-summary {
+            background: #FCEBEB;
+            border-left: 2px solid #A32D2D;
+            border-radius: 1px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.8rem;
+            color: #791F1F;
+        }
+
+        .divider { height: 0.5px; background: #E8E4DE; margin: 1.5rem 0; }
+
+        .btn-register {
+            width: 100%;
+            padding: 0.95rem;
+            background: #1C1A17;
+            color: #F7F5F2;
+            border: none;
+            border-radius: 1px;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+        .btn-register:hover { background: #9C7D4E; }
+        .btn-register:active { opacity: 0.9; }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.75rem;
+            color: #9C9187;
+        }
+        .form-footer a {
+            color: #9C7D4E;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .form-footer a:hover { text-decoration: underline; }
+
+        @@media (max-width: 520px) {
+            .form-row { grid-template-columns: 1fr; }
+            .card-body { padding: 1.5rem 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="register-card">
+
+    <div class="card-header">
+        <div class="header-mark"></div>
+        <div class="header-title">Únete a <em>RealStay</em></div>
+        <div class="header-sub">Crea tu cuenta · Encuentra tu próximo hogar</div>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Register" method="post" enctype="multipart/form-data">
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary text-danger"></div>
+
+            <div class="section-label">Información personal</div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label asp-for="FirstName"></label>
+                    <input asp-for="FirstName" placeholder="Ej. Juan" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
-                <div class="card-body p-5">
-                    <form asp-action="Register" method="post" enctype="multipart/form-data">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label asp-for="FirstName" class="form-label fw-bold">Nombre</label>
-                                <input asp-for="FirstName" class="form-control" placeholder="Ej. Juan" />
-                                <span asp-validation-for="FirstName" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="LastName" class="form-label fw-bold">Apellido</label>
-                                <input asp-for="LastName" class="form-control" placeholder="Ej. Pérez" />
-                                <span asp-validation-for="LastName" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label asp-for="UserName" class="form-label fw-bold">Nombre de Usuario</label>
-                                <input asp-for="UserName" class="form-control" placeholder="JuanPerez22" />
-                                <span asp-validation-for="UserName" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Email" class="form-label fw-bold">Correo Electrónico</label>
-                                <input asp-for="Email" class="form-control" placeholder="juan@correo.com" />
-                                <span asp-validation-for="Email" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label asp-for="PhoneNumber" class="form-label fw-bold">Teléfono</label>
-                                <input asp-for="PhoneNumber" class="form-control" placeholder="809-000-0000" />
-                                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="ProfilePicture" class="form-label fw-bold">Foto de Perfil</label>
-                                <input asp-for="ProfilePicture" type="file" class="form-control" accept="image/*" />
-                                <span asp-validation-for="ProfilePicture" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label asp-for="Password" class="form-label fw-bold">Contraseña</label>
-                                <input asp-for="Password" class="form-control" />
-                                <span asp-validation-for="Password" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="ConfirmPassword" class="form-label fw-bold">Confirmar Contraseña</label>
-                                <input asp-for="ConfirmPassword" class="form-control" />
-                                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Tipo de Cuenta</label>
-                            <select asp-for="Role" class="form-select">
-                                <option value="Client">Cliente (Deseo comprar/alquilar)</option>
-                                <option value="Agent">Agente (Deseo vender/administrar)</option>
-                            </select>
-                        </div>
-
-                        <div class="d-grid mt-5">
-                            <button type="submit" class="btn btn-primary btn-lg shadow">Crear Cuenta</button>
-                            <div class="text-center mt-3">
-                                <span class="text-muted">¿Ya tienes cuenta?</span> <a asp-action="Index" class="text-decoration-none fw-bold">Inicia sesión</a>
-                            </div>
-                        </div>
-                    </form>
+                <div class="field">
+                    <label asp-for="LastName"></label>
+                    <input asp-for="LastName" placeholder="Ej. Pérez" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
             </div>
-        </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label asp-for="UserName"></label>
+                    <input asp-for="UserName" placeholder="JuanPerez22" autocomplete="username" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" placeholder="juan@correo.com" autocomplete="email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label asp-for="PhoneNumber"></label>
+                    <input asp-for="PhoneNumber" placeholder="809-000-0000" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="ProfilePicture"></label>
+                    <div class="file-wrapper">
+                        <input asp-for="ProfilePicture" type="file" accept="image/*" />
+                        <div class="file-display">
+                            <div class="file-icon">+</div>
+                            Seleccionar imagen
+                        </div>
+                    </div>
+                    <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="section-label">Acceso y rol</div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" type="password" placeholder="••••••••" autocomplete="new-password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="ConfirmPassword"></label>
+                    <input asp-for="ConfirmPassword" type="password" placeholder="••••••••" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <div class="field">
+                    <label asp-for="Role"></label>
+                    <div class="select-wrap">
+                        <select asp-for="Role">
+                            <option value="Client">Cliente — Deseo comprar / alquilar</option>
+                            <option value="Agent">Agente — Deseo vender / administrar</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <button type="submit" class="btn-register">Crear cuenta</button>
+
+            <div class="form-footer">
+                ¿Ya tienes cuenta?
+                <a asp-action="Index">Inicia sesión</a>
+            </div>
+
+        </form>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+@model Application.ViewModels.Login.UpdateProfileViewModel
+@{
+    ViewData["Title"] = "Mi Perfil";
+    Layout = "_Layout";
+}
+
+<div class="ag-root">
+    <div class="ag-page-head">
+        <div class="ag-page-title">Mi <em>perfil</em></div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="ag-alert ag-alert-ok">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="ag-alert ag-alert-err">@TempData["Error"]</div>
+    }
+
+    <div class="ag-form-card">
+        <form asp-action="Profile" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="ag-profile-layout">
+
+                <div class="ag-avatar-wrap">
+                    @if (!string.IsNullOrEmpty(Model.ImagePath))
+                    {
+                        <img src="@Model.ImagePath" class="ag-avatar-img" alt="Foto de perfil" />
+                    }
+                    else
+                    {
+                        <div class="ag-avatar">
+                            <div class="ag-avatar-initials">
+                                @(Model.FirstName?.Substring(0,1).ToUpper() ?? "")
+                                @(Model.LastName?.Substring(0,1).ToUpper() ?? "")
+                            </div>
+                        </div>
+                    }
+
+                    <div class="ag-section-tag">Foto de perfil</div>
+
+                    <div class="ag-file-wrap">
+                        <input asp-for="ProfilePicture" type="file" accept="image/*" />
+                        <div class="ag-file-display">Seleccionar imagen</div>
+                    </div>
+                </div>
+
+                <div>
+
+                    <div class="ag-form-row">
+                        <div class="ag-field-group">
+                            <label asp-for="FirstName" class="ag-label"></label>
+                            <input asp-for="FirstName" class="ag-input" />
+                            <span asp-validation-for="FirstName" class="ag-field-err"></span>
+                        </div>
+
+                        <div class="ag-field-group">
+                            <label asp-for="LastName" class="ag-label"></label>
+                            <input asp-for="LastName" class="ag-input" />
+                            <span asp-validation-for="LastName" class="ag-field-err"></span>
+                        </div>
+                    </div>
+
+                    <div class="ag-field-group">
+                        <label asp-for="Email" class="ag-label"></label>
+                        <input asp-for="Email" class="ag-input" />
+                        <span asp-validation-for="Email" class="ag-field-err"></span>
+                    </div>
+
+                    <div class="ag-field-group">
+                        <label asp-for="PhoneNumber" class="ag-label"></label>
+                        <input asp-for="PhoneNumber" class="ag-input" />
+                        <span asp-validation-for="PhoneNumber" class="ag-field-err"></span>
+                    </div>
+
+                    <div class="ag-divider"></div>
+
+                    <div class="ag-section-tag">Cambiar contraseña (opcional)</div>
+
+                    <div class="ag-form-row">
+                        <div class="ag-field-group">
+                            <label asp-for="Password" class="ag-label"></label>
+                            <input asp-for="Password" class="ag-input" />
+                            <span asp-validation-for="Password" class="ag-field-err"></span>
+                        </div>
+
+                        <div class="ag-field-group">
+                            <label asp-for="ConfirmPassword" class="ag-label"></label>
+                            <input asp-for="ConfirmPassword" class="ag-input" />
+                            <span asp-validation-for="ConfirmPassword" class="ag-field-err"></span>
+                        </div>
+                    </div>
+
+                    <div class="ag-divider"></div>
+
+                    <div class="ag-form-actions">
+                        <a href="javascript:history.back()" class="ag-btn ag-btn-border">Volver</a>
+                        <button type="submit" class="ag-btn ag-btn-dark">Guardar cambios</button>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        document.querySelector('.ag-file-wrap input[type="file"]').addEventListener('change', function () {
+            const display = this.closest('.ag-file-wrap').querySelector('.ag-file-display');
+            if (this.files.length > 0) {
+                display.textContent = this.files[0].name;
+            } else {
+                display.textContent = 'Seleccionar imagen';
+            }
+        });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+
+<style>
+@@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@@0,300;0,400;1,300&family=DM+Sans:wght@@300;400;500&display=swap');
+
+.ag-root {
+    font-family:'DM Sans',system-ui,sans-serif;
+    background:#F7F5F2;
+    padding:2rem 2.5rem;
+}
+
+.ag-page-head {
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:1.5rem;
+    padding-bottom:1rem;
+    border-bottom:0.5px solid #DDD9D2;
+}
+
+.ag-page-title {
+    font-family:'Cormorant Garamond',Georgia,serif;
+    font-size:1.6rem;
+    font-weight:300;
+    color:#1C1A17;
+}
+
+.ag-page-title em {
+    font-style:italic;
+    color:#9C7D4E;
+}
+
+.ag-alert {
+    padding:0.75rem 1rem;
+    font-size:0.8rem;
+    border-left:2px solid;
+    margin-bottom:1.25rem;
+}
+
+.ag-alert-ok {
+    background:#EAF3DE;
+    border-color:#3B6D11;
+    color:#27500A;
+}
+
+.ag-alert-err {
+    background:#FCEBEB;
+    border-color:#A32D2D;
+    color:#791F1F;
+}
+
+.ag-form-card {
+    background:#fff;
+    border:0.5px solid #DDD9D2;
+    padding:1.75rem;
+}
+
+.ag-profile-layout {
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:2rem;
+    align-items:start;
+}
+
+.ag-avatar-wrap {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.75rem;
+}
+
+.ag-avatar {
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:#E8E4DE;
+    border:0.5px solid #DDD9D2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.ag-avatar-img {
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    border:0.5px solid #DDD9D2;
+}
+
+.ag-avatar-initials {
+    font-family:'Cormorant Garamond',Georgia,serif;
+    font-size:2rem;
+    font-weight:300;
+    color:#9C7D4E;
+}
+
+.ag-section-tag {
+    font-size:0.58rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:#9C7D4E;
+}
+
+.ag-file-wrap {
+    position:relative;
+    width:100%;
+}
+
+.ag-file-wrap input[type="file"] {
+    opacity:0;
+    position:absolute;
+    inset:0;
+    cursor:pointer;
+    z-index:2;
+}
+
+.ag-file-display {
+    padding:0.6rem 0.8rem;
+    border:0.5px dashed #C4B99A;
+    background:#FAFAF8;
+    font-size:0.75rem;
+    color:#9C9187;
+    text-align:center;
+}
+
+.ag-label {
+    font-size:0.62rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#6B6560;
+    display:block;
+    margin-bottom:0.45rem;
+}
+
+.ag-input {
+    width:100%;
+    padding:0.65rem 0.85rem;
+    border:0.5px solid #D4CFC8;
+    background:#FAFAF8;
+    font-size:0.85rem;
+    color:#1C1A17;
+}
+
+.ag-field-group {
+    margin-bottom:1rem;
+}
+
+.ag-field-err {
+    font-size:0.72rem;
+    color:#A32D2D;
+}
+
+.ag-form-row {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0.75rem;
+}
+
+.ag-divider {
+    height:0.5px;
+    background:#E8E4DE;
+    margin:1.25rem 0;
+}
+
+.ag-form-actions {
+    display:flex;
+    gap:0.5rem;
+}
+
+.ag-btn {
+    font-size:0.64rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    padding:0.65rem 1.3rem;
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+}
+
+.ag-btn-dark {
+    background:#1C1A17;
+    color:#F7F5F2;
+}
+
+.ag-btn-border {
+    background:transparent;
+    color:#6B6560;
+    border:0.5px solid #D4CFC8;
+}
+</style>
+}
