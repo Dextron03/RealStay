@@ -1,58 +1,208 @@
-﻿@using Application.ViewModels.Login
+﻿@using Application.ViewModels
+@using Application.ViewModels.Login
 @model LoginViewModel
-
 @{
     ViewData["Title"] = "Iniciar sesión";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
-    <div class="col-md-5">
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: #F7F5F2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        <div class="card shadow-lg border-0">
+        .login-card {
+            background: #FFFFFF;
+            border: 0.5px solid #DDD9D2;
+            border-radius: 2px;
+            padding: 3rem 2.8rem 2.5rem;
+            width: 100%;
+            max-width: 420px;
+        }
 
-            <div class="card-header bg-primary text-white text-center py-4">
-                <h3 class="fw-bold mb-1">RealStay</h3>
-                <small>Accede a tu cuenta</small>
-            </div>
+        .brand {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
 
-            <div class="card-body p-4">
+        .brand-mark {
+            width: 36px;
+            height: 2px;
+            background: #9C7D4E;
+            margin: 0 auto 1.2rem;
+        }
 
-                <form asp-action="Index" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+        .brand-name {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.75rem;
+            font-weight: 300;
+            letter-spacing: 0.06em;
+            color: #1C1A17;
+        }
 
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            .brand-name em {
+                font-style: italic;
+                color: #9C7D4E;
+            }
 
-                    <div class="mb-3">
-                        <label asp-for="UserName" class="form-label fw-bold"></label>
-                        <input asp-for="UserName" class="form-control" placeholder="Ingrese su usuario" />
-                        <span asp-validation-for="UserName" class="text-danger small"></span>
-                    </div>
+        .brand-sub {
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #9C9187;
+            margin-top: 0.35rem;
+        }
 
-                    <div class="mb-4">
-                        <label asp-for="Password" class="form-label fw-bold"></label>
-                        <input asp-for="Password" type="password" class="form-control" placeholder="Ingrese su contraseña" />
-                        <span asp-validation-for="Password" class="text-danger small"></span>
-                    </div>
+        .divider {
+            width: 100%;
+            height: 0.5px;
+            background: #E8E4DE;
+            margin-bottom: 2rem;
+        }
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            Iniciar sesión
-                        </button>
-                    </div>
+        .field-group {
+            margin-bottom: 1.4rem;
+        }
 
-                    <div class="text-center mt-3">
-                        <small>
-                            ¿No tienes cuenta?
-                            <a asp-action="Register" class="fw-bold text-decoration-none">
-                                Regístrate aquí
-                            </a>
-                        </small>
-                    </div>
+            .field-group label {
+                display: block;
+                font-size: 0.7rem;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: #6B6560;
+                margin-bottom: 0.55rem;
+            }
 
-                </form>
+            .field-group input {
+                width: 100%;
+                padding: 0.8rem 1rem;
+                border: 0.5px solid #D4CFC8;
+                border-radius: 1px;
+                background: #FAFAF8;
+                font-family: 'DM Sans', system-ui, sans-serif;
+                font-size: 0.92rem;
+                color: #1C1A17;
+                outline: none;
+                transition: border-color 0.2s, background 0.2s;
+            }
 
-            </div>
+                .field-group input:focus {
+                    border-color: #9C7D4E;
+                    background: #fff;
+                }
 
+                .field-group input::placeholder {
+                    color: #B8B2AA;
+                    font-size: 0.88rem;
+                }
+
+            .field-group .text-danger {
+                font-size: 0.75rem;
+                color: #A32D2D;
+                display: block;
+                margin-top: 0.4rem;
+                padding-left: 0.2rem;
+            }
+
+        .validation-summary {
+            background: #FCEBEB;
+            border-left: 2px solid #A32D2D;
+            border-radius: 1px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.8rem;
+            color: #791F1F;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.95rem;
+            background: #1C1A17;
+            color: #F7F5F2;
+            border: none;
+            border-radius: 1px;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+
+            .btn-login:hover {
+                background: #9C7D4E;
+            }
+
+            .btn-login:active {
+                opacity: 0.9;
+            }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            color: #9C9187;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+
+        <div class="brand">
+            <div class="brand-mark"></div>
+            <div class="brand-name">Arco <em>Real Estate</em></div>
+            <div class="brand-sub">Portal de Gestión</div>
         </div>
 
+        <div class="divider"></div>
+
+        <form asp-action="Index" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary text-danger"></div>
+
+            <div class="field-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" placeholder="Ingrese su usuario" autocomplete="username" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="field-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" type="password" placeholder="Ingrese su contraseña" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-login">Iniciar sesión</button>
+
+        </form>
+
+        <div class="login-footer">Acceso restringido · Solo personal autorizado</div>
+
     </div>
-</div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>

@@ -1,106 +1,243 @@
 @model List<Application.ViewModels.Properties.PropertyViewModel>
 @using Application.ViewModels.Properties
 @{
-    ViewData["Title"] = "Propiedades Disponibles";
+ViewData["Title"] = "Propiedades Disponibles";
     Layout = "_Layout";
-    var filters = ViewData["Filters"] as PropertyFilterViewModel ?? new PropertyFilterViewModel();
+var filters = ViewData["Filters"] as PropertyFilterViewModel ?? new PropertyFilterViewModel();
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Propiedades Disponibles</h2>
+<!DOCTYPE html>
 
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
 
-    {{-- Filtros --}}
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <form asp-action="Index" method="get" class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label class="form-label">Tipo de Venta</label>
-                    <select name="TypeSaleName" class="form-select">
-                        <option value="">Todos</option>
-                        <option value="Venta" selected="@(filters.TypeSaleName == "Venta")">Venta</option>
-                        <option value="Alquiler" selected="@(filters.TypeSaleName == "Alquiler")">Alquiler</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Habitaciones</label>
-                    <input type="number" name="Rooms" class="form-control" min="1" value="@filters.Rooms" placeholder="Ej: 3" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Baños</label>
-                    <input type="number" name="Bathrooms" class="form-control" min="1" value="@filters.Bathrooms" placeholder="Ej: 2" />
-                </div>
-                <div class="col-md-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
-                    <a asp-action="Index" class="btn btn-outline-secondary w-100">Limpiar</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    @if (Model.Any())
-    {
-        <div class="row">
-            @foreach (var p in Model)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card property-card h-100">
-                        @if (p.ImageUrls.Any())
-                        {
-                            <img src="@p.ImageUrls.First()" class="card-img-top" alt="@p.Name" style="height:200px;object-fit:cover;">
-                        }
-                        else
-                        {
-                            <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:200px;">
-                                <span class="text-white">Sin imagen</span>
-                            </div>
-                        }
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@p.Name</h5>
-                            <p class="card-text text-muted small mb-1">@p.Location</p>
-                            <p class="card-text">
-                                <span class="badge bg-info text-dark me-1">@p.PropertyTypeName</span>
-                                <span class="badge bg-secondary">@p.TypeSaleName</span>
-                                <span class="badge @(p.Status == "Available" ? "bg-success" : "bg-danger")">
-                                    @(p.Status == "Available" ? "Disponible" : "No disponible")
-                                </span>
-                            </p>
-                            <p class="card-text">
-                                <strong>RD$ @p.Price.ToString("N0")</strong><br>
-                                <small>@p.Rooms hab. · @p.Bathrooms baños · @p.Meters m²</small>
-                            </p>
-                            <div class="mt-auto">
-                                <a asp-action="PropertyDetails" asp-route-id="@p.Id" class="btn btn-primary btn-sm w-100">
-                                    Ver Detalles
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-info">No hay propiedades disponibles con los filtros seleccionados.</div>
-    }
-</div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:300;400&family=DM+Sans:300;400;500&display=swap" rel="stylesheet" />
 
 <style>
-    .property-card { transition: transform 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .property-card:hover { transform: translateY(-5px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: #F7F5F2;
+    }
+
+    h2 {
+        font-family: 'Cormorant Garamond', serif;
+        color: #1C1A17;
+    }
+
+    .card-custom {
+        background: #fff;
+        border: 1px solid #DDD9D2;
+    }
+
+    .form-control, .form-select {
+        border-radius: 0;
+        border: 1px solid #D4CFC8;
+        background: #FAFAF8;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #9C7D4E;
+        box-shadow: none;
+    }
+
+    .btn-main {
+        background: #1C1A17;
+        color: #F7F5F2;
+        border: none;
+    }
+
+    .btn-main:hover {
+        background: #9C7D4E;
+    }
+
+    .btn-outline-custom {
+        border: 1px solid #D4CFC8;
+        color: #6B6560;
+    }
+
+    .btn-outline-custom:hover {
+        background: #9C7D4E;
+        color: white;
+    }
+
+    .property-card {
+        background: #fff;
+        border: 1px solid #DDD9D2;
+        transition: all 0.25s ease;
+    }
+
+    .property-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .property-card img {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .property-title {
+        font-family: 'Cormorant Garamond', serif;
+        color: #1C1A17;
+    }
+
+    .location {
+        font-size: 0.8rem;
+        color: #9C9187;
+    }
+
+    .badge-custom {
+        background: #FAFAF8;
+        border: 1px solid #D4CFC8;
+        color: #6B6560;
+        font-size: 0.7rem;
+    }
+
+    .price {
+        color: #9C7D4E;
+        font-weight: bold;
+    }
+
+    .alert-success-custom {
+        background: #F0F7F2;
+        border-left: 3px solid #4A7C59;
+        color: #2E5E3E;
+    }
+
+    .alert-error-custom {
+        background: #FCEBEB;
+        border-left: 3px solid #A32D2D;
+        color: #791F1F;
+    }
+
+    .empty-state {
+        color: #9C9187;
+    }
 </style>
+
+</head>
+
+<body>
+
+<div class="container py-5">
+
+<h2 class="mb-4">Propiedades Disponibles</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success-custom alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-error-custom alert-dismissible fade show">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card-custom p-4 mb-4">
+    <form asp-action="Index" method="get" class="row g-3 align-items-end">
+
+        <div class="col-md-4">
+            <label class="form-label">Tipo de Venta</label>
+            <select name="TypeSaleName" class="form-select">
+                <option value="">Todos</option>
+                <option value="Venta" selected="@(filters.TypeSaleName == "Venta")">Venta</option>
+                <option value="Alquiler" selected="@(filters.TypeSaleName == "Alquiler")">Alquiler</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Habitaciones</label>
+            <input type="number" name="Rooms" class="form-control" value="@filters.Rooms" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Baños</label>
+            <input type="number" name="Bathrooms" class="form-control" value="@filters.Bathrooms" />
+        </div>
+
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-main w-100">Filtrar</button>
+            <a asp-action="Index" class="btn btn-outline-custom w-100">Limpiar</a>
+        </div>
+
+    </form>
+</div>
+
+@if (Model.Any())
+{
+    <div class="row g-4">
+        @foreach (var p in Model)
+        {
+            <div class="col-md-4">
+
+                <div class="property-card h-100">
+
+                    @if (p.ImageUrls.Any())
+                    {
+                        <img src="@p.ImageUrls.First()" class="w-100" />
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center" style="height:200px;background:#E8E4DE;">
+                            <span>Sin imagen</span>
+                        </div>
+                    }
+
+                    <div class="p-3 d-flex flex-column">
+
+                        <div class="property-title">@p.Name</div>
+                        <div class="location mb-2">@p.Location</div>
+
+                        <div class="mb-2">
+                            <span class="badge badge-custom">@p.PropertyTypeName</span>
+                            <span class="badge badge-custom">@p.TypeSaleName</span>
+                            <span class="badge @(p.Status == "Available" ? "bg-success" : "bg-danger")">
+                                @(p.Status == "Available" ? "Disponible" : "No disponible")
+                            </span>
+                        </div>
+
+                        <div class="price mb-2">RD$ @p.Price.ToString("N0")</div>
+
+                        <small class="text-muted mb-3">
+                            @p.Rooms hab. · @p.Bathrooms baños · @p.Meters m²
+                        </small>
+
+                        <div class="mt-auto">
+                            <a asp-action="PropertyDetails" asp-route-id="@p.Id"
+                               class="btn btn-main w-100">
+                                Ver detalles
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="text-center py-5 empty-state">
+        <div style="font-size:2rem;">🏡</div>
+        <h4 class="mt-3">No hay propiedades disponibles</h4>
+        <p>Intenta con otros filtros</p>
+    </div>
+}
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

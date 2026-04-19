@@ -4,78 +4,203 @@
     Layout = "_Layout";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Mis Favoritos</h2>
+<!DOCTYPE html>
 
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
 
-    @if (Model.Any())
-    {
-        <div class="row">
-            @foreach (var p in Model)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card property-card h-100">
-                        @if (p.ImageUrls.Any())
-                        {
-                            <img src="@p.ImageUrls.First()" class="card-img-top" alt="@p.Name" style="height:200px;object-fit:cover;">
-                        }
-                        else
-                        {
-                            <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:200px;">
-                                <span class="text-white">Sin imagen</span>
-                            </div>
-                        }
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@p.Name</h5>
-                            <p class="card-text text-muted small mb-1">@p.Location</p>
-                            <p class="card-text">
-                                <span class="badge bg-info text-dark me-1">@p.PropertyTypeName</span>
-                                <span class="badge bg-secondary">@p.TypeSaleName</span>
-                            </p>
-                            <p class="card-text">
-                                <strong>RD$ @p.Price.ToString("N0")</strong><br>
-                                <small>@p.Rooms hab. · @p.Bathrooms baños · @p.Meters m²</small>
-                            </p>
-                            <div class="mt-auto d-flex gap-2">
-                                <a asp-action="PropertyDetails" asp-route-id="@p.Id" class="btn btn-primary btn-sm flex-grow-1">
-                                    Ver Detalles
-                                </a>
-                                <form asp-action="RemoveFromWishList" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="propertyId" value="@p.Id" />
-                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Quitar de favoritos">♥</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:300;400&family=DM+Sans:300;400;500&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #F7F5F2;
+        }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            color: #1C1A17;
+        }
+
+        .property-card {
+            background: #fff;
+            border: 1px solid #DDD9D2;
+            transition: all 0.25s ease;
+        }
+
+            .property-card:hover {
+                transform: translateY(-4px);
             }
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-info">
-            No tienes propiedades en favoritos.
-            <a asp-action="Index" class="alert-link">Explorar propiedades</a>
-        </div>
-    }
-</div>
 
-<style>
-    .property-card { transition: transform 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .property-card:hover { transform: translateY(-5px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-</style>
+            .property-card img {
+                height: 200px;
+                object-fit: cover;
+            }
+
+        .property-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: #1C1A17;
+        }
+
+        .location {
+            font-size: 0.8rem;
+            color: #9C9187;
+        }
+
+        .price {
+            color: #9C7D4E;
+            font-weight: bold;
+        }
+
+        .badge-custom {
+            background: #FAFAF8;
+            border: 1px solid #D4CFC8;
+            color: #6B6560;
+            font-size: 0.7rem;
+            margin-right: 3px;
+        }
+
+        .btn-details {
+            background: #1C1A17;
+            color: #F7F5F2;
+            border: none;
+            letter-spacing: 0.08em;
+        }
+
+            .btn-details:hover {
+                background: #9C7D4E;
+            }
+
+        .btn-remove {
+            border: 1px solid #D4CFC8;
+            color: #6B6560;
+        }
+
+            .btn-remove:hover {
+                background: #A32D2D;
+                color: white;
+                border-color: #A32D2D;
+            }
+
+        .alert-custom-success {
+            background: #F0F7F2;
+            border-left: 3px solid #4A7C59;
+            color: #2E5E3E;
+        }
+
+        .alert-custom-error {
+            background: #FCEBEB;
+            border-left: 3px solid #A32D2D;
+            color: #791F1F;
+        }
+
+        .empty-state {
+            color: #9C9187;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container py-5">
+
+        <h2 class="mb-4">Mis Favoritos</h2>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-custom-success alert-dismissible fade show">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-custom-error alert-dismissible fade show">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (Model.Any())
+        {
+            <div class="row g-4">
+                @foreach (var p in Model)
+                {
+                    <div class="col-md-4">
+
+                        <div class="property-card h-100">
+
+                            @if (p.ImageUrls.Any())
+                            {
+                                <img src="@p.ImageUrls.First()" alt="@p.Name" class="w-100">
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center justify-content-center" style="height:200px;background:#E8E4DE;">
+                                    <span>Sin imagen</span>
+                                </div>
+                            }
+
+                            <div class="p-3 d-flex flex-column">
+
+                                <div class="property-title">@p.Name</div>
+                                <div class="location mb-2">@p.Location</div>
+
+                                <div class="mb-2">
+                                    <span class="badge badge-custom">@p.PropertyTypeName</span>
+                                    <span class="badge badge-custom">@p.TypeSaleName</span>
+                                </div>
+
+                                <div class="price mb-2">RD$ @p.Price.ToString("N0")</div>
+
+                                <small class="text-muted mb-3">
+                                    @p.Rooms hab. · @p.Bathrooms baños · @p.Meters m²
+                                </small>
+
+                                <div class="mt-auto d-flex gap-2">
+                                    <a asp-action="PropertyDetails" asp-route-id="@p.Id"
+                                       class="btn btn-details w-100">
+                                        Ver detalles
+                                    </a>
+
+                                    <form asp-action="RemoveFromWishList" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="propertyId" value="@p.Id" />
+                                        <button type="submit" class="btn btn-remove">
+                                            ♥
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 empty-state">
+                <div style="font-size:2rem;">❤️</div>
+                <h4 class="mt-3">No tienes propiedades en favoritos</h4>
+                <p>
+                    <a asp-action="Index">Explorar propiedades</a>
+                </p>
+            </div>
+        }
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

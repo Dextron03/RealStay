@@ -1,31 +1,46 @@
-html {
-  font-size: 14px;
-}
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
+    :root {
+        --bs-primary: #1C1A17;
+        --bs-primary-rgb: 28, 26, 23;
+    }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+    .btn-primary {
+        background-color: #1C1A17;
+        border-color: #1C1A17;
+    }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
+    .btn-primary:hover {
+        background-color: #9C7D4E;
+        border-color: #9C7D4E;
+    }
 
-body {
-  margin-bottom: 60px;
-}
+    .btn-outline-primary {
+        color: #6B6560;
+        border-color: #D4CFC8;
+    }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
+    .btn-outline-primary:hover {
+        background-color: #9C7D4E;
+        color: #fff;
+        border-color: #9C7D4E;
+    }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
-}
+    .text-primary {
+        color: #1C1A17 !important;
+    }
+
+    .nav-link {
+        color: #6B6560 !important;
+    }
+
+    .nav-link:hover {
+        color: #9C7D4E !important;
+    }
+
+    .navbar-brand {
+        color: #1C1A17 !important;
+    }
+
+    .fa-user-circle {
+        color: #1C1A17 !important;
+    }

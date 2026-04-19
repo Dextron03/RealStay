@@ -3,29 +3,43 @@
     ViewData["Title"] = "Editar Tipo de Propiedad";
 }
 
-<h2 class="mb-4">Editar Tipo de Propiedad</h2>
+<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 
-<form asp-action="EditPropertyType" asp-route-id="@ViewBag.TypeId" method="post">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-    <div class="mb-3">
-        <label asp-for="TypeName" class="form-label">Nombre del Tipo</label>
-        <input asp-for="TypeName" class="form-control" />
-        <span asp-validation-for="TypeName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label">Descripción</label>
-        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
+<div class="adm-root">
+    <div class="adm-page-head">
+        <div class="adm-page-title">Editar <em>tipo de propiedad</em></div>
     </div>
 
-    <a asp-action="PropertyTypes" class="btn btn-secondary">Volver</a>
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
+    <div class="adm-form-card">
+        <form asp-action="EditPropertyType" asp-route-id="@ViewBag.TypeId" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="adm-validation"></div>
+
+            <div class="adm-field">
+                <label asp-for="TypeName" class="adm-label"></label>
+                <input asp-for="TypeName" class="adm-input" />
+                <span asp-validation-for="TypeName" class="adm-field-err"></span>
+            </div>
+
+            <div class="adm-field">
+                <label asp-for="Description" class="adm-label"></label>
+                <textarea asp-for="Description" class="adm-textarea" rows="3"></textarea>
+                <span asp-validation-for="Description" class="adm-field-err"></span>
+            </div>
+
+            <div class="adm-divider"></div>
+
+            <div class="adm-form-actions">
+                <a asp-action="PropertyTypes" class="adm-btn adm-btn-border">Volver</a>
+                <button type="submit" class="adm-btn adm-btn-dark">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
 }

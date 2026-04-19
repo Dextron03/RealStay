@@ -3,39 +3,50 @@
     ViewData["Title"] = "Desarrolladores";
 }
 
-<h2 class="mb-4">Mantenimiento de Desarrolladores</h2>
+<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 
-<a asp-action="CreateDeveloper" class="btn btn-primary mb-3">Crear Desarrollador</a>
+<div class="adm-root">
+    <div class="adm-page-head">
+        <div class="adm-page-title">Mantenimiento de <em>desarrolladores</em></div>
+        <a asp-action="CreateDeveloper" class="adm-btn adm-btn-dark">Crear desarrollador</a>
+    </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Usuario</th>
-            <th>Cédula</th>
-            <th>Correo</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var dev in Model)
-        {
-            <tr>
-                <td>@dev.FirstName</td>
-                <td>@dev.LastName</td>
-                <td>@dev.UserName</td>
-                <td>@dev.Cedula</td>
-                <td>@dev.Email</td>
-                <td>
-                    <a asp-action="EditDeveloper" asp-route-id="@dev.Id"
-                       class="btn btn-sm btn-primary">Editar</a>
-                    <a asp-action="ToggleDeveloperActive" asp-route-id="@dev.Id"
-                       class="btn btn-sm @(dev.IsActive ? "btn-warning" : "btn-success")">
-                        @(dev.IsActive ? "Inactivar" : "Activar")
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    @if (TempData["Success"] != null)
+    {
+        <div class="adm-alert adm-alert-ok">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="adm-alert adm-alert-err">@TempData["Error"]</div>
+    }
+
+    <div class="adm-table-wrap">
+        <table class="adm-table">
+            <thead>
+                <tr><th>Nombre</th><th>Apellido</th><th>Usuario</th><th>Cédula</th><th>Correo</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var dev in Model)
+                {
+                    <tr>
+                        <td>@dev.FirstName</td>
+                        <td>@dev.LastName</td>
+                        <td class="adm-muted">@dev.UserName</td>
+                        <td class="adm-muted">@dev.Cedula</td>
+                        <td class="adm-muted">@dev.Email</td>
+                        <td>
+                            <div class="adm-actions">
+                                <a asp-action="EditDeveloper" asp-route-id="@dev.Id"
+                                   class="adm-btn adm-btn-sm adm-btn-dark">Editar</a>
+                                <a asp-action="ToggleDeveloperActive" asp-route-id="@dev.Id"
+                                   class="adm-btn adm-btn-sm @(dev.IsActive ? "adm-btn-toggle-off" : "adm-btn-toggle-on")">
+                                    @(dev.IsActive ? "Inactivar" : "Activar")
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -131,74 +131,6 @@ namespace RealStay.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Profile()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
-
-            var vm = new UpdateProfileViewModel
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email!,
-                PhoneNumber = user.PhoneNumber!,
-                ImagePath = user.PathImg
-            };
-
-            return View(vm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> Profile(UpdateProfileViewModel vm)
-        {
-            if (!ModelState.IsValid)
-                return View(vm);
-
-            var user = await _userManager.FindByIdAsync(vm.Id);
-            if (user == null) return NotFound();
-
-            user.FirstName = vm.FirstName;
-            user.LastName = vm.LastName;
-            user.Email = vm.Email;
-            user.PhoneNumber = vm.PhoneNumber;
-
-            if (vm.ProfilePicture != null)
-            {
-                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(vm.ProfilePicture.FileName)}";
-                var folderPath = Path.Combine(_env.WebRootPath, "uploads", "users");
-                Directory.CreateDirectory(folderPath);
-                var filePath = Path.Combine(folderPath, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await vm.ProfilePicture.CopyToAsync(stream);
-                }
-                user.PathImg = $"/uploads/users/{fileName}";
-            }
-
-            var result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
-            {
-                if (!string.IsNullOrEmpty(vm.Password))
-                {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    await _userManager.ResetPasswordAsync(user, token, vm.Password);
-                }
-
-                TempData["Success"] = "Perfil actualizado exitosamente.";
-                return RedirectToRoleHome();
-            }
-
-            foreach (var error in result.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
-
-            return View(vm);
-        }
-
-        [HttpGet]
         public IActionResult Index(string? returnUrl = null)
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -264,7 +196,7 @@ namespace RealStay.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Account");
+            return RedirectToAction("Welcome", "Home");
         }
 
         [HttpGet]

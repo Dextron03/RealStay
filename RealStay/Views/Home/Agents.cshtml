@@ -1,0 +1,87 @@
+@model List<Application.DTOs.Agent.AgentProfileDto>
+@{
+    ViewData["Title"] = "Agentes Inmobiliarios";
+    var searchName = ViewData["SearchName"] as string;
+}
+
+<div class="ag-root">
+    <div class="ag-page-head">
+        <div>
+            <div class="ag-eyebrow">Directorio</div>
+            <div class="ag-page-title">Nuestros <em>agentes</em></div>
+        </div>
+        <form asp-action="Agents" method="get" class="ag-search-form">
+            <input type="text" name="name" class="ag-search-input"
+                   placeholder="Buscar por nombre..." value="@searchName" />
+            <button type="submit" class="ag-btn ag-btn-dark">Buscar</button>
+        </form>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="ag-agents-grid">
+            @foreach (var agent in Model)
+            {
+                <div class="ag-agent-card">
+                    <div class="ag-agent-img-wrap">
+                        @if (!string.IsNullOrEmpty(agent.PathImg))
+                        {
+                            <img src="@agent.PathImg" alt="@agent.FirstName" class="ag-agent-img" />
+                        }
+                        else
+                        {
+                            <div class="ag-agent-avatar">
+                                @(agent.FirstName?.Substring(0,1).ToUpper() ?? "")@(agent.LastName?.Substring(0,1).ToUpper() ?? "")
+                            </div>
+                        }
+                    </div>
+                    <div class="ag-agent-name">@agent.FirstName @agent.LastName</div>
+                    <div class="ag-agent-email">@agent.Email</div>
+                    <div class="ag-agent-divider"></div>
+                    <a asp-action="AgentProperties" asp-route-agentId="@agent.Id"
+                       class="ag-btn ag-btn-dark ag-btn-full">Ver propiedades</a>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="ag-empty">
+            <div class="ag-empty-title">Sin resultados</div>
+            <div class="ag-empty-sub">No se encontraron agentes con ese nombre.</div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@@0,300;0,400;1,300&family=DM+Sans:wght@@300;400;500&display=swap');
+    .ag-root { font-family:'DM Sans',system-ui,sans-serif; background:#F7F5F2; padding:2rem 2.5rem; }
+    .ag-page-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:0.5px solid #DDD9D2; gap:2rem; flex-wrap:wrap; }
+    .ag-eyebrow { font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:#9C7D4E; margin-bottom:0.35rem; }
+    .ag-page-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.8rem; font-weight:300; color:#1C1A17; }
+    .ag-page-title em { font-style:italic; color:#9C7D4E; }
+    .ag-search-form { display:flex; gap:0; flex-shrink:0; }
+    .ag-search-input { padding:0.65rem 1rem; border:0.5px solid #D4CFC8; border-right:none; border-radius:0; background:#fff; font-family:'DM Sans',system-ui,sans-serif; font-size:0.85rem; color:#1C1A17; outline:none; width:260px; transition:border-color 0.2s; }
+    .ag-search-input:focus { border-color:#9C7D4E; }
+    .ag-search-input::placeholder { color:#B8B2AA; }
+    .ag-btn { font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; padding:0.65rem 1.25rem; border:none; border-radius:0; cursor:pointer; font-family:'DM Sans',system-ui,sans-serif; text-decoration:none; display:inline-block; transition:background 0.2s,color 0.2s; }
+    .ag-btn-dark { background:#1C1A17; color:#F7F5F2; } .ag-btn-dark:hover { background:#9C7D4E; color:#1C1A17; }
+    .ag-btn-full { display:block; text-align:center; width:100%; }
+    .ag-agents-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:#DDD9D2; border:0.5px solid #DDD9D2; }
+    .ag-agent-card { background:#fff; padding:2rem 1.5rem; display:flex; flex-direction:column; align-items:center; text-align:center; transition:background 0.15s; }
+    .ag-agent-card:hover { background:#FAFAF8; }
+    .ag-agent-img-wrap { margin-bottom:1.1rem; }
+    .ag-agent-img { width:88px; height:88px; border-radius:50%; object-fit:cover; border:0.5px solid #DDD9D2; display:block; }
+    .ag-agent-avatar { width:88px; height:88px; border-radius:50%; background:#EAE7E2; border:0.5px solid #DDD9D2; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',Georgia,serif; font-size:1.6rem; font-weight:300; color:#9C7D4E; }
+    .ag-agent-name { font-size:0.88rem; font-weight:500; color:#1C1A17; margin-bottom:0.3rem; }
+    .ag-agent-email { font-size:0.72rem; color:#9C9187; margin-bottom:0.9rem; }
+    .ag-agent-divider { width:24px; height:1px; background:#9C7D4E; margin:0 auto 1rem; }
+    .ag-empty { text-align:center; padding:5rem 2rem; background:#fff; border:0.5px solid #DDD9D2; }
+    .ag-empty-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.8rem; font-weight:300; color:#1C1A17; margin-bottom:0.5rem; }
+    .ag-empty-sub { font-size:0.82rem; color:#9C9187; font-weight:300; }
+    @@media (max-width:1024px) { .ag-agents-grid { grid-template-columns:repeat(3,1fr); } }
+    @@media (max-width:768px) { .ag-agents-grid { grid-template-columns:repeat(2,1fr); } .ag-search-input { width:180px; } }
+    @@media (max-width:480px) { .ag-agents-grid { grid-template-columns:1fr; } .ag-root { padding:1.5rem 1rem; } }
+</style>
+}

@@ -1,10 +1,13 @@
 using Application.Interfaces.Message;
 using Application.Interfaces.Offer;
 using Application.Interfaces.Properties;
+using Application.ViewModels.Login;
 using Application.ViewModels.Messages;
 using Application.ViewModels.Offers;
 using Application.ViewModels.Properties;
+using Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -18,37 +21,90 @@ namespace RealStay.Controllers
         private readonly IOfferService _offerService;
         private readonly IMessageService _messageService;
         private readonly Application.Interfaces.Agent.IAgentService _agentService;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IWebHostEnvironment _env;
 
         public ClientController(
             IPropertyService propertyService,
             IWishListService wishListService,
             IOfferService offerService,
             IMessageService messageService,
-            Application.Interfaces.Agent.IAgentService agentService)
+            Application.Interfaces.Agent.IAgentService agentService,
+            UserManager<AppUser> userManager,
+            IWebHostEnvironment env)
+
         {
             _propertyService = propertyService;
             _wishListService = wishListService;
             _offerService = offerService;
             _messageService = messageService;
             _agentService = agentService;
-        }
-
-        // ── Agentes ──────────────────────────────────────────────────────────
-        [HttpGet]
-        public async Task<IActionResult> Agents(string name)
-        {
-            var agents = await _agentService.SearchAgentsByNameAsync(name);
-            ViewData["SearchName"] = name;
-            return View(agents);
+            _userManager = userManager;
+            _env = env;
         }
 
         [HttpGet]
-        public async Task<IActionResult> AgentProperties(string agentId)
+        public async Task<IActionResult> Profile()
         {
-            var properties = await _propertyService.GetByAgentAsync(agentId);
-            var agent = await _agentService.GetAgentProfileAsync(agentId);
-            ViewData["AgentName"] = $"{agent.FirstName} {agent.LastName}";
-            return View(properties);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            var vm = new UpdateProfileViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email!,
+                PhoneNumber = user.PhoneNumber!,
+                ImagePath = user.PathImg
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(UpdateProfileViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var user = await _userManager.FindByIdAsync(vm.Id);
+            if (user == null) return NotFound();
+
+            user.FirstName = vm.FirstName;
+            user.LastName = vm.LastName;
+            user.Email = vm.Email;
+            user.PhoneNumber = vm.PhoneNumber;
+
+            if (vm.ProfilePicture != null)
+            {
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(vm.ProfilePicture.FileName)}";
+                var folderPath = Path.Combine(_env.WebRootPath, "uploads", "users");
+                Directory.CreateDirectory(folderPath);
+
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await vm.ProfilePicture.CopyToAsync(stream);
+                }
+
+                user.PathImg = $"/uploads/users/{fileName}";
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Perfil actualizado correctamente.";
+                return RedirectToAction("Index");
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
+            return View(vm);
         }
 
         private string GetClientId() =>

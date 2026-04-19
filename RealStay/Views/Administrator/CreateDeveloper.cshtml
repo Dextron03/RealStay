@@ -3,51 +3,81 @@
     ViewData["Title"] = "Crear Desarrollador";
 }
 
-<h2 class="mb-4">Crear Desarrollador</h2>
+<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 
-<form asp-action="CreateDeveloper" method="post">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-    <div class="mb-3">
-        <label asp-for="FirstName" class="form-label">Nombre</label>
-        <input asp-for="FirstName" class="form-control" />
-        <span asp-validation-for="FirstName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="LastName" class="form-label">Apellido</label>
-        <input asp-for="LastName" class="form-control" />
-        <span asp-validation-for="LastName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="UserName" class="form-label">Usuario</label>
-        <input asp-for="UserName" class="form-control" />
-        <span asp-validation-for="UserName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Cedula" class="form-label">Cédula</label>
-        <input asp-for="Cedula" class="form-control" />
-        <span asp-validation-for="Cedula" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Email" class="form-label">Correo</label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Password" class="form-label">Contraseña</label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="ConfirmPassword" class="form-label">Confirmar Contraseña</label>
-        <input asp-for="ConfirmPassword" type="password" class="form-control" />
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+<div class="adm-root">
+    <div class="adm-page-head">
+        <div class="adm-page-title">Crear <em>desarrollador</em></div>
     </div>
 
-    <a asp-action="Developers" class="btn btn-secondary">Volver</a>
-    <button type="submit" class="btn btn-primary">Crear</button>
-</form>
+    <div class="adm-form-card">
+        <form asp-action="CreateDeveloper" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="adm-validation"></div>
+
+            <div class="adm-section-tag">Información personal</div>
+
+            <div class="adm-form-row">
+                <div class="adm-field">
+                    <label asp-for="FirstName" class="adm-label"></label>
+                    <input asp-for="FirstName" class="adm-input" />
+                    <span asp-validation-for="FirstName" class="adm-field-err"></span>
+                </div>
+
+                <div class="adm-field">
+                    <label asp-for="LastName" class="adm-label"></label>
+                    <input asp-for="LastName" class="adm-input" />
+                    <span asp-validation-for="LastName" class="adm-field-err"></span>
+                </div>
+            </div>
+
+            <div class="adm-form-row">
+                <div class="adm-field">
+                    <label asp-for="UserName" class="adm-label"></label>
+                    <input asp-for="UserName" class="adm-input" />
+                    <span asp-validation-for="UserName" class="adm-field-err"></span>
+                </div>
+
+                <div class="adm-field">
+                    <label asp-for="Cedula" class="adm-label"></label>
+                    <input asp-for="Cedula" class="adm-input" />
+                    <span asp-validation-for="Cedula" class="adm-field-err"></span>
+                </div>
+            </div>
+
+            <div class="adm-field">
+                <label asp-for="Email" class="adm-label"></label>
+                <input asp-for="Email" class="adm-input" />
+                <span asp-validation-for="Email" class="adm-field-err"></span>
+            </div>
+
+            <div class="adm-divider"></div>
+
+            <div class="adm-section-tag">Acceso</div>
+
+            <div class="adm-form-row">
+                <div class="adm-field">
+                    <label asp-for="Password" class="adm-label"></label>
+                    <input asp-for="Password" type="password" class="adm-input" />
+                    <span asp-validation-for="Password" class="adm-field-err"></span>
+                </div>
+
+                <div class="adm-field">
+                    <label asp-for="ConfirmPassword" class="adm-label"></label>
+                    <input asp-for="ConfirmPassword" type="password" class="adm-input" />
+                    <span asp-validation-for="ConfirmPassword" class="adm-field-err"></span>
+                </div>
+            </div>
+
+            <div class="adm-divider"></div>
+
+            <div class="adm-form-actions">
+                <a asp-action="Developers" class="adm-btn adm-btn-border">Volver</a>
+                <button type="submit" class="adm-btn adm-btn-dark">Crear</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     @{

@@ -1,73 +1,54 @@
 ﻿@model Application.DTOs.Administrator.Dashboards.AdminDashboarDto
 @{
-    ViewData["Title"] = "Dashboard Administrador";
+    ViewData["Title"] = "Dashboard";
 }
 
-<h2 class="mb-4">Dashboard del Administrador</h2>
+<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 
-<div class="row g-4">
-    <div class="col-md-3">
-        <div class="card text-white bg-success">
-            <div class="card-body">
-                <h5 class="card-title">Propiedades Disponibles</h5>
-                <p class="card-text display-6">@Model.AvailableProperties</p>
-            </div>
-        </div>
+<div class="adm-root">
+    <div class="adm-page-head">
+        <div class="adm-page-title">Dashboard del <em>administrador</em></div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-danger">
-            <div class="card-body">
-                <h5 class="card-title">Propiedades Vendidas</h5>
-                <p class="card-text display-6">@Model.SoldProperties</p>
-            </div>
+    <div class="adm-dash-grid">
+        <div class="adm-dash-card avail">
+            <div class="adm-dash-label">Propiedades disponibles</div>
+            <div class="adm-dash-num">@Model.AvailableProperties</div>
+            <span class="adm-dash-accent"></span>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Agentes Activos</h5>
-                <p class="card-text display-6">@Model.ActiveAgents</p>
-            </div>
+        <div class="adm-dash-card sold">
+            <div class="adm-dash-label">Propiedades vendidas</div>
+            <div class="adm-dash-num">@Model.SoldProperties</div>
+            <span class="adm-dash-accent"></span>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-secondary">
-            <div class="card-body">
-                <h5 class="card-title">Agentes Inactivos</h5>
-                <p class="card-text display-6">@Model.InactiveAgents</p>
-            </div>
+        <div class="adm-dash-card gold">
+            <div class="adm-dash-label">Agentes activos</div>
+            <div class="adm-dash-num">@Model.ActiveAgents</div>
+            <span class="adm-dash-accent"></span>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Clientes Activos</h5>
-                <p class="card-text display-6">@Model.ActiveClients</p>
-            </div>
+        <div class="adm-dash-card muted">
+            <div class="adm-dash-label">Agentes inactivos</div>
+            <div class="adm-dash-num">@Model.InactiveAgents</div>
+            <span class="adm-dash-accent"></span>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-secondary">
-            <div class="card-body">
-                <h5 class="card-title">Clientes Inactivos</h5>
-                <p class="card-text display-6">@Model.InactiveClients</p>
-            </div>
+        <div class="adm-dash-card gold">
+            <div class="adm-dash-label">Clientes activos</div>
+            <div class="adm-dash-num">@Model.ActiveClients</div>
+            <span class="adm-dash-accent"></span>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Desarrolladores Activos</h5>
-                <p class="card-text display-6">@Model.ActiveDevelopers</p>
-            </div>
+        <div class="adm-dash-card muted">
+            <div class="adm-dash-label">Clientes inactivos</div>
+            <div class="adm-dash-num">@Model.InactiveClients</div>
+            <span class="adm-dash-accent"></span>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-secondary">
-            <div class="card-body">
-                <h5 class="card-title">Desarrolladores Inactivos</h5>
-                <p class="card-text display-6">@Model.InactiveDevelopers</p>
-            </div>
+        <div class="adm-dash-card gold">
+            <div class="adm-dash-label">Desarrolladores activos</div>
+            <div class="adm-dash-num">@Model.ActiveDevelopers</div>
+            <span class="adm-dash-accent"></span>
+        </div>
+        <div class="adm-dash-card muted">
+            <div class="adm-dash-label">Desarrolladores inactivos</div>
+            <div class="adm-dash-num">@Model.InactiveDevelopers</div>
+            <span class="adm-dash-accent"></span>
         </div>
     </div>
 </div>

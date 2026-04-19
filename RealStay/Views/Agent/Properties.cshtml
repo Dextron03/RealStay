@@ -4,80 +4,68 @@
     Layout = "_Layout";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Mantenimiento de Propiedades</h2>
-        <a asp-action="CreateProperty" class="btn btn-primary">Crear Nueva Propiedad</a>
+<div class="ag-root">
+    <div class="ag-page-head">
+        <div class="ag-page-title">Mantenimiento de <em>propiedades</em></div>
+        <a asp-action="CreateProperty" class="ag-btn ag-btn-dark">Crear nueva propiedad</a>
     </div>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="ag-alert ag-alert-ok">@TempData["Success"]</div>
     }
-
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="ag-alert ag-alert-err">@TempData["Error"]</div>
     }
 
     @if (Model.Any())
     {
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
+        <div class="ag-table-wrap">
+            <table class="ag-table">
+                <thead>
                     <tr>
-                        <th>Imagen</th>
-                        <th>Código</th>
-                        <th>Tipo</th>
-                        <th>Venta</th>
-                        <th>Precio</th>
-                        <th>Hab/Baños</th>
-                        <th>Tamaño</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>Imagen</th><th>Código</th><th>Tipo</th><th>Venta</th>
+                        <th>Precio</th><th>Hab/Baños</th><th>Tamaño</th><th>Estado</th><th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var property in Model)
+                    @foreach (var p in Model)
                     {
                         <tr>
                             <td>
-                                @if (!string.IsNullOrEmpty(property.FirstImage))
+                                @if (!string.IsNullOrEmpty(p.FirstImage))
                                 {
-                                    <img src="@property.FirstImage" alt="@property.Name" style="width: 60px; height: 60px; object-fit: cover;" class="rounded">
+                                    <img src="@p.FirstImage" class="ag-thumb" alt="@p.Name" />
                                 }
                                 else
                                 {
-                                    <div class="bg-secondary d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                        <span class="text-white">-</span>
-                                    </div>
+                                    <div class="ag-thumb-empty"></div>
                                 }
                             </td>
-                            <td>@property.PropertyCode</td>
-                            <td>@property.PropertyTypeName</td>
-                            <td>@property.TypeSaleName</td>
-                            <td>RD$ @property.Price.ToString("N0")</td>
-                            <td>@property.NumberRooms / @property.NumberBaths</td>
-                            <td>@property.Meters m²</td>
+                            <td class="ag-code">@p.PropertyCode</td>
+                            <td>@p.PropertyTypeName</td>
+                            <td>@p.TypeSaleName</td>
+                            <td class="ag-price-cell">RD$ @p.Price.ToString("N0")</td>
+                            <td class="ag-muted">@p.NumberRooms / @p.NumberBaths</td>
+                            <td class="ag-muted">@p.Meters m²</td>
                             <td>
-                                @if (property.Status == "Sold" || property.Status == "Vendida")
+                                @if (p.Status == "Sold" || p.Status == "Vendida")
                                 {
-                                    <span class="badge bg-danger">Vendida</span>
+                                    <span class="ag-badge ag-badge-sold">Vendida</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-success">Disponible</span>
+                                    <span class="ag-badge ag-badge-avail">Disponible</span>
                                 }
                             </td>
                             <td>
-                                <a asp-action="EditProperty" asp-route-id="@property.Id" class="btn btn-sm btn-warning">Editar</a>
-                                <a asp-action="DeleteProperty" asp-route-id="@property.Id" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro que desea eliminar esta propiedad?');">Eliminar</a>
+                                <div class="ag-actions">
+                                    <a asp-action="EditProperty" asp-route-id="@p.Id" class="ag-btn ag-btn-gold ag-btn-sm">Editar</a>
+                                    <a asp-action="DeleteProperty" asp-route-id="@p.Id"
+                                       class="ag-btn ag-btn-danger ag-btn-sm"
+                                       onclick="return confirm('¿Está seguro?');">Eliminar</a>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -87,8 +75,46 @@
     }
     else
     {
-        <div class="alert alert-info">
-            No tienes propiedades disponibles. Crea tu primera propiedad.
+        <div class="ag-empty">
+            <div class="ag-empty-title">Sin propiedades</div>
+            <div class="ag-empty-sub">Crea tu primera propiedad para comenzar.</div>
         </div>
     }
 </div>
+
+@section Scripts {
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@@0,300;0,400;1,300&family=DM+Sans:wght@@300;400;500&display=swap');
+    .ag-root { font-family:'DM Sans',system-ui,sans-serif; background:#F7F5F2; padding:2rem 2.5rem; }
+    .ag-page-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:0.5px solid #DDD9D2; }
+    .ag-page-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.6rem; font-weight:300; color:#1C1A17; }
+    .ag-page-title em { font-style:italic; color:#9C7D4E; }
+    .ag-alert { padding:0.75rem 1rem; font-size:0.8rem; border-left:2px solid; margin-bottom:1.25rem; }
+    .ag-alert-ok  { background:#EAF3DE; border-color:#3B6D11; color:#27500A; }
+    .ag-alert-err { background:#FCEBEB; border-color:#A32D2D; color:#791F1F; }
+    .ag-btn { font-size:0.64rem; letter-spacing:0.14em; text-transform:uppercase; padding:0.65rem 1.3rem; border:none; border-radius:0; cursor:pointer; font-family:'DM Sans',system-ui,sans-serif; text-decoration:none; display:inline-block; transition:background 0.2s,color 0.2s; }
+    .ag-btn-dark   { background:#1C1A17; color:#F7F5F2; } .ag-btn-dark:hover   { background:#9C7D4E; color:#1C1A17; }
+    .ag-btn-gold   { background:#9C7D4E; color:#1C1A17; } .ag-btn-gold:hover   { background:#C4985E; }
+    .ag-btn-danger { background:#A32D2D; color:#fff; }    .ag-btn-danger:hover { opacity:0.85; }
+    .ag-btn-sm { padding:0.4rem 0.85rem; font-size:0.6rem; }
+    .ag-table-wrap { border:0.5px solid #DDD9D2; overflow:hidden; }
+    .ag-table { width:100%; border-collapse:collapse; background:#fff; }
+    .ag-table thead tr { background:#1C1A17; }
+    .ag-table thead th { padding:0.75rem 1rem; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:#F7F5F2; font-weight:400; border:none; }
+    .ag-table tbody tr { border-bottom:0.5px solid #E8E4DE; transition:background 0.15s; }
+    .ag-table tbody tr:hover { background:#FAFAF8; }
+    .ag-table td { padding:0.75rem 1rem; font-size:0.82rem; color:#1C1A17; vertical-align:middle; border:none; }
+    .ag-thumb { width:48px; height:48px; object-fit:cover; display:block; }
+    .ag-thumb-empty { width:48px; height:48px; background:#E8E4DE; }
+    .ag-code { color:#9C9187; font-size:0.78rem; }
+    .ag-muted { color:#9C9187; }
+    .ag-price-cell { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.05rem; font-weight:300; }
+    .ag-badge { font-size:0.56rem; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius:0; }
+    .ag-badge-avail { background:#EAF3DE; color:#3B6D11; }
+    .ag-badge-sold  { background:#FCEBEB; color:#A32D2D; }
+    .ag-actions { display:flex; gap:4px; }
+    .ag-empty { text-align:center; padding:3.5rem 1rem; background:#fff; border:0.5px solid #DDD9D2; }
+    .ag-empty-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.5rem; font-weight:300; color:#1C1A17; margin-bottom:0.4rem; }
+    .ag-empty-sub { font-size:0.82rem; color:#9C9187; }
+</style>
+}

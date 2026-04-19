@@ -4,37 +4,28 @@
     Layout = "_Layout";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Ofertas Recibidas</h2>
+<div class="ag-root">
+    <div class="ag-page-head">
+        <div class="ag-page-title">Ofertas <em>recibidas</em></div>
+    </div>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="ag-alert ag-alert-ok">@TempData["Success"]</div>
     }
-
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <div class="ag-alert ag-alert-err">@TempData["Error"]</div>
     }
 
     @if (Model.Any())
     {
-        <div class="table-responsive">
-            <table class="table table-hover shadow-sm">
-                <thead class="table-light">
+        <div class="ag-table-wrap">
+            <table class="ag-table">
+                <thead>
                     <tr>
-                        <th>Propiedad</th>
-                        <th>Cliente</th>
-                        <th>Monto Ofrecido</th>
-                        <th>Fecha</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>Propiedad</th><th>Cliente</th><th>Monto</th>
+                        <th>Fecha</th><th>Estado</th><th style="text-align:right;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,47 +33,50 @@
                     {
                         <tr>
                             <td>
-                                <a asp-controller="Agent" asp-action="PropertyDetails" asp-route-id="@offer.PropertyId" class="text-decoration-none">
+                                <a asp-controller="Agent" asp-action="PropertyDetails"
+                                   asp-route-id="@offer.PropertyId" class="ag-link">
                                     @offer.PropertyName
                                 </a>
                             </td>
                             <td>@offer.UserName</td>
-                            <td>RD$ @offer.OfferAmount.ToString("N0")</td>
-                            <td>@offer.DateRegistration.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="ag-price-cell">RD$ @offer.OfferAmount.ToString("N0")</td>
+                            <td class="ag-muted">@offer.DateRegistration.ToString("dd/MM/yyyy HH:mm")</td>
                             <td>
                                 @switch (offer.Status)
                                 {
                                     case "Pending":
-                                        <span class="badge bg-warning text-dark">Pendiente</span>
+                                        <span class="ag-badge ag-badge-pend">Pendiente</span>
                                         break;
                                     case "Accepted":
-                                        <span class="badge bg-success">Aceptada</span>
+                                        <span class="ag-badge ag-badge-avail">Aceptada</span>
                                         break;
                                     case "Rejected":
-                                        <span class="badge bg-danger">Rechazada</span>
+                                        <span class="ag-badge ag-badge-sold">Rechazada</span>
                                         break;
                                     default:
-                                        <span class="badge bg-secondary">@offer.Status</span>
+                                        <span class="ag-badge ag-badge-pend">@offer.Status</span>
                                         break;
                                 }
                             </td>
-                            <td>
+                            <td style="text-align:right;">
                                 @if (offer.Status == "Pending")
                                 {
-                                    <form asp-action="AcceptOffer" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="offerId" value="@offer.Id" />
-                                        <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
-                                    </form>
-                                    <form asp-action="RejectOffer" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="offerId" value="@offer.Id" />
-                                        <button type="submit" class="btn btn-danger btn-sm">Rechazar</button>
-                                    </form>
+                                    <div class="ag-actions" style="justify-content:flex-end;">
+                                        <form asp-action="AcceptOffer" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="offerId" value="@offer.Id" />
+                                            <button type="submit" class="ag-btn ag-btn-dark ag-btn-sm">Aceptar</button>
+                                        </form>
+                                        <form asp-action="RejectOffer" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="offerId" value="@offer.Id" />
+                                            <button type="submit" class="ag-btn ag-btn-border ag-btn-sm">Rechazar</button>
+                                        </form>
+                                    </div>
                                 }
                                 else
                                 {
-                                    <span class="text-muted">Sin acciones</span>
+                                    <span class="ag-muted" style="font-size:0.75rem;">Sin acciones</span>
                                 }
                             </td>
                         </tr>
@@ -93,8 +87,45 @@
     }
     else
     {
-        <div class="alert alert-info">
-            No has recibido ofertas aún. Los clientes podrán ofrecer por tus propiedades.
+        <div class="ag-empty">
+            <div class="ag-empty-title">Sin ofertas</div>
+            <div class="ag-empty-sub">Aún no has recibido ofertas. <a asp-action="Properties" class="ag-link">Ver propiedades</a></div>
         </div>
     }
 </div>
+
+@section Scripts {
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@@0,300;0,400;1,300&family=DM+Sans:wght@@300;400;500&display=swap');
+    .ag-root { font-family:'DM Sans',system-ui,sans-serif; background:#F7F5F2; padding:2rem 2.5rem; }
+    .ag-page-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:0.5px solid #DDD9D2; }
+    .ag-page-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.6rem; font-weight:300; color:#1C1A17; }
+    .ag-page-title em { font-style:italic; color:#9C7D4E; }
+    .ag-alert { padding:0.75rem 1rem; font-size:0.8rem; border-left:2px solid; margin-bottom:1.25rem; }
+    .ag-alert-ok  { background:#EAF3DE; border-color:#3B6D11; color:#27500A; }
+    .ag-alert-err { background:#FCEBEB; border-color:#A32D2D; color:#791F1F; }
+    .ag-btn { font-size:0.64rem; letter-spacing:0.14em; text-transform:uppercase; padding:0.65rem 1.3rem; border:none; border-radius:0; cursor:pointer; font-family:'DM Sans',system-ui,sans-serif; text-decoration:none; display:inline-block; transition:background 0.2s,color 0.2s,border-color 0.2s; }
+    .ag-btn-dark   { background:#1C1A17; color:#F7F5F2; } .ag-btn-dark:hover   { background:#9C7D4E; color:#1C1A17; }
+    .ag-btn-border { background:transparent; color:#6B6560; border:0.5px solid #D4CFC8; } .ag-btn-border:hover { border-color:#9C7D4E; color:#9C7D4E; }
+    .ag-btn-sm { padding:0.4rem 0.85rem; font-size:0.6rem; }
+    .ag-table-wrap { border:0.5px solid #DDD9D2; overflow:hidden; }
+    .ag-table { width:100%; border-collapse:collapse; background:#fff; }
+    .ag-table thead tr { background:#1C1A17; }
+    .ag-table thead th { padding:0.75rem 1rem; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:#F7F5F2; font-weight:400; border:none; }
+    .ag-table tbody tr { border-bottom:0.5px solid #E8E4DE; transition:background 0.15s; }
+    .ag-table tbody tr:hover { background:#FAFAF8; }
+    .ag-table td { padding:0.75rem 1rem; font-size:0.82rem; color:#1C1A17; vertical-align:middle; border:none; }
+    .ag-price-cell { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.05rem; font-weight:300; }
+    .ag-muted { color:#9C9187; }
+    .ag-link { color:#9C7D4E; text-decoration:none; font-weight:500; }
+    .ag-link:hover { text-decoration:underline; }
+    .ag-badge { font-size:0.56rem; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius:0; }
+    .ag-badge-avail { background:#EAF3DE; color:#3B6D11; }
+    .ag-badge-sold  { background:#FCEBEB; color:#A32D2D; }
+    .ag-badge-pend  { background:#FAEEDA; color:#854F0B; }
+    .ag-actions { display:flex; gap:4px; }
+    .ag-empty { text-align:center; padding:3.5rem 1rem; background:#fff; border:0.5px solid #DDD9D2; }
+    .ag-empty-title { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.5rem; font-weight:300; color:#1C1A17; margin-bottom:0.4rem; }
+    .ag-empty-sub { font-size:0.82rem; color:#9C9187; }
+</style>
+}

@@ -4,385 +4,72 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RealStay</title>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-
-    <!-- Bootstrap 5 + Iconos -->
+    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RealStay.styles.css" asp-append-version="true" />
-
-    <style>
-        /* ========== VARIABLES PREMIUM ========== */
-        :root {
-            --primary: #0F172A;
-            --secondary: #6366F1;
-            --accent: #06B6D4;
-            --gradient: linear-gradient(135deg, #6366F1 0%, #06B6D4 100%);
-            --gradient-hover: linear-gradient(135deg, #4F46E5 0%, #0891B2 100%);
-            --bg-light: #F1F5F9;
-            --text-dark: #0F172A;
-            --text-muted: #64748B;
-            --card-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.08);
-            --card-shadow-hover: 0 25px 40px -12px rgba(99, 102, 241, 0.2);
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--bg-light);
-            color: var(--text-dark);
-            scroll-behavior: smooth;
-        }
-
-        /* ========== NAVBAR PREMIUM ========== */
-        .navbar-premium {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(12px);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 24px -6px rgba(0, 0, 0, 0.05);
-            padding: 1rem 0;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-brand-premium {
-            font-size: 1.75rem;
-            font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-            transition: all 0.3s ease;
-        }
-
-            .navbar-brand-premium:hover {
-                transform: scale(1.02);
-                background: var(--gradient-hover);
-                -webkit-background-clip: text;
-                background-clip: text;
-            }
-
-        .nav-link-premium {
-            font-weight: 500;
-            color: var(--text-dark);
-            transition: all 0.2s ease;
-            position: relative;
-            margin: 0 0.25rem;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-        }
-
-            .nav-link-premium:hover {
-                background: rgba(99, 102, 241, 0.08);
-                color: var(--secondary);
-            }
-
-            .nav-link-premium.active {
-                background: var(--gradient);
-                color: white;
-            }
-
-        /* ========== BOTONES PREMIUM ========== */
-        .btn-premium {
-            background: var(--gradient);
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 0.6rem 1.8rem;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-            .btn-premium:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
-                color: white;
-            }
-
-        .btn-outline-premium {
-            border: 2px solid var(--secondary);
-            background: transparent;
-            color: var(--secondary);
-            font-weight: 600;
-            padding: 0.5rem 1.6rem;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
-
-            .btn-outline-premium:hover {
-                background: var(--gradient);
-                border-color: transparent;
-                color: white;
-                transform: translateY(-2px);
-            }
-
-        /* ========== FOOTER PREMIUM ========== */
-        .footer-premium {
-            background: var(--primary);
-            color: #94A3B8;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-            .footer-premium a {
-                color: #94A3B8;
-                text-decoration: none;
-                transition: all 0.2s ease;
-            }
-
-                .footer-premium a:hover {
-                    color: var(--accent);
-                    transform: translateX(4px);
-                    display: inline-block;
-                }
-
-        /* ========== DROPDOWN PREMIUM ========== */
-        .dropdown-premium {
-            border: none;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-            border-radius: 20px;
-            padding: 0.5rem;
-            margin-top: 0.75rem;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-        }
-
-        .dropdown-item-premium {
-            border-radius: 14px;
-            padding: 0.6rem 1rem;
-            transition: all 0.2s ease;
-            font-weight: 500;
-        }
-
-            .dropdown-item-premium:hover {
-                background: var(--gradient);
-                color: white;
-                transform: translateX(4px);
-            }
-
-        /* ========== AVATAR ========== */
-        .avatar-premium {
-            width: 40px;
-            height: 40px;
-            background: var(--gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        /* ========== ANIMACIONES ========== */
-        .animate-fadeInUp {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        @@keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ========== UTILIDADES EXTRA ========== */
-        .hover-text-cyan:hover {
-            color: var(--accent) !important;
-        }
-
-        .text-cyan-400 {
-            color: var(--accent);
-        }
-
-        .min-vh-100 {
-            min-height: 100vh;
-        }
-    </style>
 </head>
 <body>
-
-    <!-- ========== NAVBAR PREMIUM ========== -->
-    <nav class="navbar navbar-expand-lg navbar-premium sticky-top">
-        <div class="container">
-            <a class="navbar-brand-premium" asp-controller="Home" asp-action="Welcome">
-                <i class="fas fa-building me-2" style="background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
-                RealStay
-            </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPremium">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarPremium">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link-premium" asp-controller="Home" asp-action="Index">
-                            <i class="fas fa-compass me-1"></i>Explorar
-                        </a>
-                    </li>
-                    @if (User.Identity!.IsAuthenticated)
-                    {
-                        @if (User.IsInRole("Cliente"))
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-primary" asp-controller="Home" asp-action="Welcome">
+                    <i class="fas fa-home me-2"></i>RealStay
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Ver Propiedades</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex align-items-center gap-2">
+                        @if (User.Identity!.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link-premium" asp-controller="Client" asp-action="MyProperties">
-                                    <i class="fas fa-heart me-1"></i>Favoritos
+                            <div class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                    <span class="me-2 text-dark">@User.Identity.Name</span>
+                                    <i class="fas fa-user-circle fa-lg text-primary"></i>
                                 </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link-premium" asp-controller="Client" asp-action="MyOffers">
-                                    <i class="fas fa-tag me-1"></i>Mis Ofertas
-                                </a>
-                            </li>
+                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">Cerrar Sesión</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         }
-                        @if (User.IsInRole("Agente"))
+                        else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link-premium" asp-controller="Agent" asp-action="Index">
-                                    <i class="fas fa-chart-line me-1"></i>Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link-premium" asp-controller="Agent" asp-action="Properties">
-                                    <i class="fas fa-building me-1"></i>Propiedades
-                                </a>
-                            </li>
+                            <a class="btn btn-outline-primary btn-sm me-2 px-3" asp-controller="Home" asp-action="Agents">Listado de agentes</a>
+                            <a class="btn btn-outline-primary btn-sm px-3" asp-controller="Account" asp-action="Index">Iniciar Sesión</a>
+                            <a class="btn btn-primary btn-sm px-3 shadow-sm" asp-controller="Account" asp-action="Register">Regístrate</a>
                         }
-                        @if (User.IsInRole("Administrador"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link-premium" asp-controller="Administrator" asp-action="Index">
-                                    <i class="fas fa-crown me-1"></i>Admin Panel
-                                </a>
-                            </li>
-                        }
-                    }
-                </ul>
-                <div class="d-flex align-items-center gap-2">
-                    @if (User.Identity!.IsAuthenticated)
-                    {
-                        <div class="dropdown">
-                            <button class="btn btn-outline-premium dropdown-toggle d-flex align-items-center gap-2"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div class="avatar-premium">
-                                    @User.Identity.Name.Substring(0, 1).ToUpper()
-                                </div>
-                                <span>@User.Identity.Name</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-premium dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item dropdown-item-premium" asp-controller="Account" asp-action="Profile">
-                                        <i class="fas fa-user me-2"></i>Mi Perfil
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form asp-controller="Account" asp-action="Logout" method="post">
-                                        <button type="submit" class="dropdown-item dropdown-item-premium text-danger">
-                                            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    }
-                    else
-                    {
-                        <a class="btn btn-outline-premium" asp-controller="Account" asp-action="Index">
-                            <i class="fas fa-key me-2"></i>Iniciar Sesión
-                        </a>
-                        <a class="btn btn-premium" asp-controller="Account" asp-action="Register">
-                            <i class="fas fa-user-plus me-2"></i>Regístrate
-                        </a>
-                    }
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <!-- ========== MAIN CONTENT ========== -->
-    <main role="main" class="min-vh-100">
+    <main role="main">
         @RenderBody()
     </main>
 
-    <!-- ========== FOOTER PREMIUM ========== -->
-    <footer class="footer-premium pt-5 pb-4 mt-5">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <h5 class="text-white fw-bold mb-3">
-                        <i class="fas fa-building me-2 text-cyan-400"></i>RealStay
-                    </h5>
-                    <p class="small text-white-50">Tu plataforma inmobiliaria de confianza. Encuentra el hogar de tus sueños con nosotros.</p>
-                    <div class="d-flex gap-3 mt-3">
-                        <a href="#" class="text-white-50 hover-text-cyan"><i class="fab fa-facebook-f fa-lg"></i></a>
-                        <a href="#" class="text-white-50 hover-text-cyan"><i class="fab fa-instagram fa-lg"></i></a>
-                        <a href="#" class="text-white-50 hover-text-cyan"><i class="fab fa-twitter fa-lg"></i></a>
-                        <a href="#" class="text-white-50 hover-text-cyan"><i class="fab fa-linkedin-in fa-lg"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4">
-                    <h6 class="text-white fw-semibold mb-3">Explorar</h6>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><a href="#" class="text-white-50">Propiedades</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50">Agentes</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50">Ofertas</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50">Testimonios</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-4">
-                    <h6 class="text-white fw-semibold mb-3">Soporte</h6>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><a href="#" class="text-white-50">Centro de Ayuda</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50">Contacto</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50">Términos y Condiciones</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50">Privacidad</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <h6 class="text-white fw-semibold mb-3">Contacto</h6>
-                    <ul class="list-unstyled small text-white-50">
-                        <li class="mb-2"><i class="fas fa-envelope me-2"></i> info@realstay.com</li>
-                        <li class="mb-2"><i class="fas fa-phone me-2"></i> +1 (809) 555-1234</li>
-                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> Santo Domingo, RD</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="border-secondary mt-4">
-            <div class="text-center small text-white-50">
-                &copy; @DateTime.Now.Year RealStay - Todos los derechos reservados.
-            </div>
+    <footer class="bg-dark text-white py-4 mt-0">
+        <div class="container text-center">
+            <p class="mb-1 fw-semibold"><i class="fas fa-home me-2"></i>RealStay</p>
+            <p class="text-white-50 small mb-0">&copy; 2026 RealStay. Todos los derechos reservados.</p>
         </div>
     </footer>
 
-    <!-- ========== SCRIPTS ========== -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 100
-        });
-
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar-premium');
-            if (window.scrollY > 50) {
-                navbar.style.padding = '0.5rem 0';
-                navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
-            } else {
-                navbar.style.padding = '1rem 0';
-            }
-        });
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
