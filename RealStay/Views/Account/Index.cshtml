@@ -1,35 +1,58 @@
-﻿@using Application.ViewModels;
-@using Application.ViewModels.Login
+﻿@using Application.ViewModels.Login
 @model LoginViewModel
 
 @{
     ViewData["Title"] = "Iniciar sesión";
 }
 
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="col-md-5">
 
-<div class="container d-flex justify-content-center align-items-center" style="height:100vh;">
+        <div class="card shadow-lg border-0">
 
-            <form asp-action="Index" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h3 class="fw-bold mb-1">RealStay</h3>
+                <small>Accede a tu cuenta</small>
+            </div>
 
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="card-body p-4">
 
-                <div class="mb-3">
-                    <label asp-for="UserName" class="form-label"></label>
-                    <input asp-for="UserName" class="form-control" placeholder=" Ingrese su usuario" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </div>
+                <form asp-action="Index" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
 
-                <div class="mb-3">
-                    <label asp-for="Password" class="form-label"></label>
-                    <input asp-for="Password" type="password" class="form-control" placeholder=" Ingrese su contraseña" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <div class="d-grid mt-4">
-                    <button type="submit" class="btn btn-bank btn-lg">
-                        Iniciar sesión
-                    </button>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="UserName" class="form-label fw-bold"></label>
+                        <input asp-for="UserName" class="form-control" placeholder="Ingrese su usuario" />
+                        <span asp-validation-for="UserName" class="text-danger small"></span>
+                    </div>
 
-            </form>
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label fw-bold"></label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Ingrese su contraseña" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Iniciar sesión
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <small>
+                            ¿No tienes cuenta?
+                            <a asp-action="Register" class="fw-bold text-decoration-none">
+                                Regístrate aquí
+                            </a>
+                        </small>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 </div>
