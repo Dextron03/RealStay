@@ -86,6 +86,16 @@ namespace Infrastructure.Persistence.Repositories
 
             return await query.ToListAsync();
         }
+        public async Task<Property?> GetByCodeAsync(string code)
+        {
+            return await _dbContext.Properties
+                .Include(p => p.PropertyType)
+                .Include(p => p.TypeSale)
+                .Include(p => p.Images)
+                .Include(p => p.Improvements)
+                    .ThenInclude(pi => pi.Improvement)
+                .FirstOrDefaultAsync(p => p.PropertyCode == code);
+        }
 
     }
 }

@@ -12,5 +12,6 @@ namespace Domain.Interfaces
         Task<List<Property>> GetByAgentDetailsAsync(string agentId);
         Task<Property> GetByIdWithDetailsAsync(string id);
         Task<List<Property>> FilterAsync(string? typeSaleName, string? propertyTypeId, decimal? minPrice, decimal? maxPrice, int? rooms, int? bathrooms);
+        Task<Property?> GetByCodeAsync(string code);
     }
 }
