@@ -42,6 +42,7 @@ namespace RealStay.API.Controllers
         }
 
         [HttpPost("register-developer")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> RegisterDeveloper([FromBody] CreateUserDto model)
         {
             var user = new AppUser

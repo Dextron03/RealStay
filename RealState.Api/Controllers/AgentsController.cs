@@ -29,19 +29,16 @@ namespace RealStay.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<AgentListDto>>> List()
         {
-            var allUsers = await _userManager.Users.ToListAsync();
-            var agents = new List<AppUser>();
+            var agentsInRole = await _userManager.GetUsersInRoleAsync("Agent");
+            var agentIds = agentsInRole.Select(a => a.Id).ToList();
 
-            foreach (var user in allUsers)
-            {
-                if (await _userManager.IsInRoleAsync(user, "Agent"))  
-                {
-                    agents.Add(user);
-                }
-            }
-
-            if (agents == null || agents.Count == 0)
+            if (agentIds.Count == 0)
                 return NoContent();
+
+            var agents = await _userManager.Users
+                .Include(u => u.Properties)
+                .Where(u => agentIds.Contains(u.Id))
+                .ToListAsync();
 
             return Ok(_mapper.Map<List<AgentListDto>>(agents));
         }

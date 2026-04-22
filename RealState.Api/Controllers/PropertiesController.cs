@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Application.DTOs.Administrator.Properties;
+using Application.DTOs.Agent;
 using Domain.Interfaces;
 using AutoMapper;
 
@@ -21,33 +21,33 @@ namespace RealStay.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<PropertiesDto>>> List()
+        public async Task<ActionResult<List<AgentPropertyDto>>> List()
         {
             var properties = await _propertyRepository.GetAllWithDetailsAsync();
             if (properties == null || properties.Count == 0)
                 return NoContent();
 
-            return Ok(_mapper.Map<List<PropertiesDto>>(properties));
+            return Ok(_mapper.Map<List<AgentPropertyDto>>(properties));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PropertiesDto>> GetById(string id)
+        public async Task<ActionResult<AgentPropertyDto>> GetById(string id)
         {
             var property = await _propertyRepository.GetByIdWithDetailsAsync(id);
             if (property == null)
                 return NotFound();
 
-            return Ok(_mapper.Map<PropertiesDto>(property));
+            return Ok(_mapper.Map<AgentPropertyDto>(property));
         }
 
         [HttpGet("code/{code}")]
-        public async Task<ActionResult<PropertiesDto>> GetByCode(string code)
+        public async Task<ActionResult<AgentPropertyDto>> GetByCode(string code)
         {
             var property = await _propertyRepository.GetByCodeAsync(code);
             if (property == null)
                 return NotFound();
 
-            return Ok(_mapper.Map<PropertiesDto>(property));
+            return Ok(_mapper.Map<AgentPropertyDto>(property));
         }
     }
 }

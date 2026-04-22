@@ -1,5 +1,6 @@
 using Application.DTOs.Administrator.User;
 using Application.Interfaces;
+using Application.Interfaces.Agent;
 using Application.ViewModels.Administrator.Agent;
 using Application.ViewModels.Administrator.User;
 using Domain.Enums;
@@ -16,10 +17,12 @@ namespace Application.Services
     public class AdminUserService : IAdminUserService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IAgentService _agentService;
 
-        public AdminUserService(UserManager<AppUser> userManager)
+        public AdminUserService(UserManager<AppUser> userManager, IAgentService agentService)
         {
             _userManager = userManager;
+            _agentService = agentService;
         }
 
         public async Task<List<UserListViewModel>> GetAllAdminsAsync()
@@ -164,8 +167,11 @@ namespace Application.Services
 
             if (user == null) throw new Exception("Agente no encontrado");
 
-            user.Properties.Clear();
-            await _userManager.UpdateAsync(user);
+            var propertyIds = user.Properties.Select(p => p.Id).ToList();
+            foreach (var propertyId in propertyIds)
+            {
+                await _agentService.DeletePropertyAsync(propertyId, user.Id);
+            }
 
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
