@@ -10,10 +10,10 @@ namespace Infrastructure.Identity.Seeds
         {
             var defaultUser = new AppUser
             {
-                UserName = "Sketty",
+                UserName = "Braily0330",
                 Email = "ambrousecream@gmail.com",
-                FirstName = "Scarlet",
-                LastName = "Maris",
+                FirstName = "Braily",
+                LastName = "Roman",
                 IdentityNumber = "11111111111",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,

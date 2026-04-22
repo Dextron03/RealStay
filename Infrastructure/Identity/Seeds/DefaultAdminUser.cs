@@ -15,10 +15,10 @@ namespace Infrastructure.Identity.Seeds
             // Hacemos un super usuario administrador
             var defaultUser = new AppUser
             {
-                UserName = "Therian69",
+                UserName = "Admin23",
                 Email = "michelle.clau12@gmail.com",
-                FirstName = "Claudia",
-                LastName = "Zapata",
+                FirstName = "Kevin",
+                LastName = "Francisco",
                 IdentityNumber = "00000000000",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,

@@ -116,14 +116,9 @@ namespace RealStay.Controllers
             try
             {
                 var property = await _agentService.GetPropertyByIdAsync(id, agentId);
-                
-                var propertyTypes = await _propertyTypeService.GetAllAsync();
-                var typeSales = await _saleTypeService.GetAllAsync();
-                var improvements = await _improvementService.GetAllAsync();
 
-                ViewData["PropertyTypes"] = propertyTypes;
-                ViewData["TypeSales"] = typeSales;
-                ViewData["Improvements"] = improvements;
+                await LoadPropertyLookupsAsync();
+                ViewBag.PropertyId = id;
 
                 var editModel = new EditAgentPropertyViewModel
                 {
@@ -135,7 +130,7 @@ namespace RealStay.Controllers
                     NumberRooms = property.NumberRooms,
                     NumberBaths = property.NumberBaths,
                     Location = property.Location,
-                    ImprovementIds = new List<string>(),
+                    ImprovementIds = property.ImprovementIds,
                     ExistingImages = property.ImageUrls
                 };
                 return View(editModel);
@@ -151,15 +146,19 @@ namespace RealStay.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProperty(string id, EditAgentPropertyViewModel model)
         {
+            var agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(agentId))
+                return RedirectToAction("Index", "Account");
+
             if (!ModelState.IsValid)
+            {
+                await LoadPropertyLookupsAsync();
+                ViewBag.PropertyId = id;
                 return View(model);
+            }
 
             try
             {
-                var agentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(agentId))
-                    return RedirectToAction("Index", "Account");
-
                 await _agentService.UpdatePropertyAsync(id, agentId, model);
                 TempData["Success"] = "Propiedad actualizada exitosamente";
                 return RedirectToAction("Properties");
@@ -167,8 +166,17 @@ namespace RealStay.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
+                await LoadPropertyLookupsAsync();
+                ViewBag.PropertyId = id;
                 return View(model);
             }
+        }
+
+        private async Task LoadPropertyLookupsAsync()
+        {
+            ViewData["PropertyTypes"] = await _propertyTypeService.GetAllAsync();
+            ViewData["TypeSales"] = await _saleTypeService.GetAllAsync();
+            ViewData["Improvements"] = await _improvementService.GetAllAsync();
         }
 
         [HttpGet]

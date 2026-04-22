@@ -19,6 +19,7 @@ namespace Application.DTOs.Agent
         public string FirstImage { get; set; } = string.Empty;
         public List<string> ImageUrls { get; set; } = new();
         public List<string> ImprovementNames { get; set; } = new();
+        public List<string> ImprovementIds { get; set; } = new();
         public string PropertyTypeId { get; set; } = string.Empty;
         public string TypeSaleId { get; set; } = string.Empty;
     }

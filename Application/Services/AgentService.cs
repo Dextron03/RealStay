@@ -121,7 +121,8 @@ namespace Application.Services
                 Location = property.Location,
                 FirstImage = property.Images.FirstOrDefault()?.Path ?? string.Empty,
                 ImageUrls = property.Images.Select(i => i.Path ?? string.Empty).ToList(),
-                ImprovementNames = property.Improvements.Select(i => i.Improvement?.Name ?? string.Empty).ToList()
+                ImprovementNames = property.Improvements.Select(i => i.Improvement?.Name ?? string.Empty).ToList(),
+                ImprovementIds = property.Improvements.Select(i => i.ImprovementId).ToList()
             };
         }
 
@@ -257,9 +258,16 @@ namespace Application.Services
 
             foreach (var image in property.Images)
             {
-                if (!string.IsNullOrEmpty(image.Path) && File.Exists(image.Path))
+                if (!string.IsNullOrEmpty(image.Path))
                 {
-                    File.Delete(image.Path);
+                    var physicalPath = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        image.Path.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                    if (File.Exists(physicalPath))
+                    {
+                        File.Delete(physicalPath);
+                    }
                 }
                 _propertyImageRepository.Remove(image);
             }
@@ -302,9 +310,16 @@ namespace Application.Services
 
             if (model.Image != null && model.Image.Length > 0)
             {
-                if (!string.IsNullOrEmpty(user.PathImg) && File.Exists(user.PathImg))
+                if (!string.IsNullOrEmpty(user.PathImg))
                 {
-                    File.Delete(user.PathImg);
+                    var physicalPath = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        user.PathImg.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                    if (File.Exists(physicalPath))
+                    {
+                        File.Delete(physicalPath);
+                    }
                 }
                 user.PathImg = await SaveImageAsync(model.Image);
             }

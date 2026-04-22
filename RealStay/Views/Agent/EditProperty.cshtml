@@ -8,9 +8,8 @@
     <h2>Editar Propiedad</h2>
     <hr />
 
-    <form asp-action="EditProperty" method="post" enctype="multipart/form-data">
-        <input type="hidden" asp-for="PropertyTypeId" />
-        <input type="hidden" asp-for="TypeSaleId" />
+    <form asp-action="EditProperty" asp-route-id="@ViewBag.PropertyId" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
 
         <div class="row">
             <div class="col-md-6">
