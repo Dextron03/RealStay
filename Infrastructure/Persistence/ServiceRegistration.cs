@@ -15,12 +15,24 @@ namespace Infrastructure.Persistence
     {
         public static void AddPersistenceLayer(this IServiceCollection services, IConfiguration configuration)
         {
+            // Si "UseInMemoryDatabase" esta en true (ver appsettings.Development.json)
+            // se levanta una base de datos en memoria; util para demos donde solo
+            // se quieren mostrar las interfaces sin instalar SQL Server.
+            var useInMemory = configuration.GetValue<bool>("UseInMemoryDatabase");
+
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(configuration
-                    .GetConnectionString("DefaultConnection"),
-                    m => m.MigrationsAssembly(typeof(ApplicationDbContext)
-                    .Assembly.FullName));
+                if (useInMemory)
+                {
+                    options.UseInMemoryDatabase("RealStayDb");
+                }
+                else
+                {
+                    options.UseSqlServer(configuration
+                        .GetConnectionString("DefaultConnection"),
+                        m => m.MigrationsAssembly(typeof(ApplicationDbContext)
+                        .Assembly.FullName));
+                }
             });
 
             #region  Repositories
